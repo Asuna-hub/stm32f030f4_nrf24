@@ -1,0 +1,66 @@
+#include "spi.h"
+
+void SPI1_Init(void){
+	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN; //SPI clocking
+	
+	SPI1->CR1 = 0; //reset all CR1 registers
+	SPI1->CR1 |= SPI_CR1_BR_1; // 48000000 / 8 = 6 MHz
+	SPI1->CR1 &= ~(SPI_CR1_BIDIMODE | SPI_CR1_RXONLY); //2-line unidirectional data mode, full duplex
+	SPI1->CR1 &= ~(SPI_CR1_CPOL | SPI_CR1_CPHA); //[0,0] mode (CPOL - 0, CPHA - 0)
+	SPI1->CR1 &= ~SPI_CR1_LSBFIRST; //MSB first
+	SPI1->CR1 |= SPI_CR1_SSM | SPI_CR1_SSI; //Software slave management enable
+	SPI1->CR1 |= SPI_CR1_MSTR; //Master configuration
+	
+	SPI1->CR2 = 0; //reset all CR2 registers
+	SPI1->CR2 |= SPI_CR2_DS_0 | SPI_CR2_DS_1 | SPI_CR2_DS_2; // 8 bit
+	SPI1->CR2 &= ~SPI_CR2_FRF; // SPI Motorola mode
+	SPI1->CR2 &= ~SPI_CR2_FRXTH; // Trigger on 8 bit
+	SPI1->CR2 &= ~SPI_CR2_SSOE; // 
+	SPI1->CR2 &= ~SPI_CR2_NSSP; //NSSP mode disable 
+	SPI1->CR1 |= SPI_CR1_SPE; //SPI enable
+}
+
+void SPI1_NRF24_GPIO_Init(void){
+	RCC->AHBENR |= RCC_AHBENR_GPIOAEN | RCC_AHBENR_GPIOBEN;
+	
+	//PA4 - NSS(CS), general purpose output push-pull
+	GPIOA->MODER &= ~GPIO_MODER_MODER4_1;
+	GPIOA->MODER |= GPIO_MODER_MODER4_0;
+	
+	GPIOA->OTYPER &= ~GPIO_OTYPER_OT_4;
+	
+	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEEDR4_0;
+	GPIOA->OSPEEDR &= ~GPIO_OSPEEDR_OSPEEDR4_1;
+	
+	//PA5 - SCK, AF output Push-pull
+	GPIOA->MODER |= GPIO_MODER_MODER5_1;
+	GPIOA->MODER &= ~GPIO_MODER_MODER5_0;
+	
+	GPIOA->OTYPER &= ~GPIO_OTYPER_OT_5;
+	
+	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEEDR5_0;
+	GPIOA->OSPEEDR &= ~GPIO_OSPEEDR_OSPEEDR5_1;
+	
+	//PA6 - MISO, input mode
+	GPIOA->MODER &= ~GPIO_MODER_MODER6;
+	
+	//PA7 - MOSI, AF output Push-pull
+	GPIOA->MODER |= GPIO_MODER_MODER7_1;
+	GPIOA->MODER &= ~GPIO_MODER_MODER7_0;
+	
+	GPIOA->OTYPER &= ~GPIO_OTYPER_OT_7;
+	
+	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEEDR7_0;
+	GPIOA->OSPEEDR &= ~GPIO_OSPEEDR_OSPEEDR7_1;
+	
+	//PB1 - CE, general purpose output push-pull
+	GPIOB->MODER &= ~GPIO_MODER_MODER1_1;
+	GPIOB->MODER |= GPIO_MODER_MODER1_0;
+	
+	GPIOB->OTYPER &= ~GPIO_OTYPER_OT_1;
+	
+	GPIOB->OSPEEDR |= GPIO_OSPEEDR_OSPEEDR1_0;
+	GPIOB->OSPEEDR &= ~GPIO_OSPEEDR_OSPEEDR1_1;
+	
+	//PA0 - IRQ
+}

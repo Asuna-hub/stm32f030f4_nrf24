@@ -1,0 +1,39 @@
+# Keil uVision files
+*.uvgui.*
+*.uvopt
+*.uvproj.*
+*.uvmpw
+*.plg
+
+# Keil uVision user-specific files
+*.uvguix.*
+*.uvgui.*
+
+# Build outputs
+*.lst
+*.map
+*.axf
+*.bin
+*.hex
+*.crf
+*.d
+*.o
+*.lnp
+*.iex
+*.dep
+*.bak
+
+# Object and Listing files
+Objects/
+Listings/
+
+# Debug files
+*.ini
+*.dbg
+
+# Temporary files
+*.__i
+*.tds
+*.cdb
+*.sct
+*.log

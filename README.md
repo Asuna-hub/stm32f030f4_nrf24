@@ -32,8 +32,8 @@ This project provides a complete driver for NRF24L01 wireless transceiver module
 
 #### 1. Clone Repository
 ```bash
-git clone https://github.com/Asuna-hub/STM32F103_NRF24L01.git
-cd STM32F103_NRF24L01
+git clone https://github.com/Asuna-hub/stm32f030f4_nrf24.git
+cd stm32f030f4_nrf24
 ```
 </div>
 
@@ -64,6 +64,6 @@ cd STM32F103_NRF24L01
 
 #### 1. Клонируйте репозиторий
 ```bash
-git clone https://github.com/Asuna-hub/STM32F103_NRF24L01.git
-cd STM32F103_NRF24L01
+git clone https://github.com/Asuna-hub/stm32f030f4_nrf24.git
+cd stm32f030f4_nrf24
 ```

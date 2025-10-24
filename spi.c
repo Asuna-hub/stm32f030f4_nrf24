@@ -74,4 +74,5 @@ void SPI1_NRF24_GPIO_Init(void){
 	
 	GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR0;
   GPIOA->PUPDR |= GPIO_PUPDR_PUPDR0_0; // Pull-up
+	
 }

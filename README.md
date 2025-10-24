@@ -1,6 +1,6 @@
 <div align="center">
 
-# STM32F103 NRF24L01 Project 🇺🇸 🇷🇺
+# STM32F030F4P6 NRF24L01 Project 🇺🇸 🇷🇺
 
 [English](#english) | [Русский](#russian)
 

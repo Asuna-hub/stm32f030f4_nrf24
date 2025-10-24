@@ -13,9 +13,9 @@
 //RF setup register
 #define NRF24_PLL_LOCK		  4
 #define NRF24_RF_DR_LOW		  5
-#define NRF24_RF_DR_HIGH		3
-#define NRF24_RF_DR			    3
-#define NRF24_RF_PWR			  1 //2 bits   
+#define NRF24_RF_DR_HIGH	  3
+#define NRF24_RF_DR			  3
+#define NRF24_RF_PWR	      1 //2 bits   
 
 
 typedef enum {
@@ -88,9 +88,9 @@ enum NRF24_Commands{
 	NRF24_CMD_FLUSH_RX           = 0xE2, // Flush RX FIFO, used in RX mode
 	NRF24_CMD_REUSE_TX_PL        = 0xE3, // Used for a PTX device. Reuse last transmitted payload
 	NRF24_CMD_ACTIVATE           = 0x50, // This write command followed by data 0x73 activates the following features:
-                                       // • R_RX_PL_WID
-                                       // • W_ACK_PAYLOAD
-                                       // • W_TX_PAYLOAD_NOACK
+                                       // â€¢ R_RX_PL_WID
+                                       // â€¢ W_ACK_PAYLOAD
+                                       // â€¢ W_TX_PAYLOAD_NOACK
 	NRF24_CMD_R_RX_PL_WID        = 0x60, // Read RX-payload width for the top R_RX_PAYLOAD in the RX FIFO.
 	NRF24_CMD_W_ACK_PAYLOAD      = 0xA8, // Used in RX mode. Write Payload to be transmitted together with ACK packet on PIPE PPP
 	NRF24_CMD_W_TX_PAYLOAD_NOACK = 0xB0, // Used in TX mode. Disables AUTOACK on this specific packet.

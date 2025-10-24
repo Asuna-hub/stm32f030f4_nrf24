@@ -404,6 +404,11 @@
               <FileType>1</FileType>
               <FilePath>.\spi.c</FilePath>
             </File>
+            <File>
+              <FileName>nrf24.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\nrf24.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -428,6 +433,11 @@
               <FileName>spi.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\spi.h</FilePath>
+            </File>
+            <File>
+              <FileName>nrf24.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\nrf24.h</FilePath>
             </File>
           </Files>
         </Group>

@@ -37,7 +37,6 @@
 #define NRF24_REG_FEATURE     0x1D
 
 // Commands
-
 #define NRF24_CMD_R_REGISTER    0x00
 #define NRF24_CMD_W_REGISTER    0x20
 #define NRF24_CMD_R_RX_PAYLOAD  0x61
@@ -81,4 +80,33 @@
 #define NRF24_RX_FULL         0x02
 #define NRF24_RX_EMPTY        0x01
 
+// CONFIG register
+#define NRF24_MASK_RX_DR      0x40
+#define NRF24_MASK_TX_DS      0x20
+#define NRF24_MASK_MAX_RT     0x10
+#define NRF24_EN_CRC          0x08
+#define NRF24_CRCO            0x04
+#define NRF24_PWR_UP          0x02
+#define NRF24_PRIM_RX         0x01
+
+// STATUS register
+#define NRF24_RX_DR           0x40
+#define NRF24_TX_DS           0x20
+#define NRF24_MAX_RT          0x10
+#define NRF24_RX_P_NO         0x0E
+#define NRF24_TX_FULL         0x01
+
+// RF_SETUP register
+#define NRF24_CONT_WAVE       0x80
+#define NRF24_RF_DR_LOW       0x20
+#define NRF24_PLL_LOCK        0x10
+#define NRF24_RF_DR_HIGH      0x08
+#define NRF24_RF_PWR          0x06
+
+// FIFO_STATUS register
+#define NRF24_TX_REUSE        0x40
+#define NRF24_TX_FIFO_FULL    0x20
+#define NRF24_TX_EMPTY        0x10
+#define NRF24_RX_FULL         0x02
+#define NRF24_RX_EMPTY        0x01
 #endif

@@ -74,5 +74,20 @@ void SPI1_NRF24_GPIO_Init(void){
 	
 	GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR0;
   GPIOA->PUPDR |= GPIO_PUPDR_PUPDR0_0; // Pull-up
+}
+
+
+void SPI_transfer_data(uint8_t rg, uint8_t dt){
+	NSS_RESET;
 	
+		while(!(SPI1->SR & SPI_SR_TXE));
+		SPI1->DR = (uint16_t)rg;
+		while(SPI1->SR & SPI_SR_RXNE);
+		(void) SPI1->DR;
+		while(!(SPI1->SR & SPI_SR_TXE));
+		SPI1->DR = (uint16_t)dt;
+		while(SPI1->SR & SPI_SR_RXNE);
+		(void) SPI1->DR;
+	
+	NSS_SET;
 }

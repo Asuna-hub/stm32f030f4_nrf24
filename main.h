@@ -4,5 +4,6 @@
 #include "stm32f030x6.h"
 #include "rcc.h"
 #include "systick.h"
+#include "spi.h"
 
 #endif

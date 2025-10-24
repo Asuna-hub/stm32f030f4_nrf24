@@ -31,7 +31,8 @@ void SPI1_NRF24_GPIO_Init(void){
 	
 	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEEDR4_0;
 	GPIOA->OSPEEDR &= ~GPIO_OSPEEDR_OSPEEDR4_1;
-	NSS_SET;
+	
+	GPIOA->BSRR = GPIO_BSRR_BS_4;
 	
 	//PA5 - SCK, AF output Push-pull
 	GPIOA->MODER |= GPIO_MODER_MODER5_1;
@@ -69,6 +70,7 @@ void SPI1_NRF24_GPIO_Init(void){
 	GPIOB->OSPEEDR |= GPIO_OSPEEDR_OSPEEDR1_0;
 	GPIOB->OSPEEDR &= ~GPIO_OSPEEDR_OSPEEDR1_1;
 	
+	GPIOB->BSRR = GPIO_BSRR_BS_1;
 	//PA0 - IRQ
 	GPIOA->MODER &= ~GPIO_MODER_MODER0;
 	
@@ -77,15 +79,9 @@ void SPI1_NRF24_GPIO_Init(void){
 }
 
 
-void SPI_transfer_data(uint8_t rg, uint8_t dt){
-	NSS_RESET;
-		while(!(SPI1->SR & SPI_SR_TXE));
-		SPI1->DR = (uint16_t)rg;
-		while(SPI1->SR & SPI_SR_RXNE);
-		(void) SPI1->DR;
-		while(!(SPI1->SR & SPI_SR_TXE));
-		SPI1->DR = (uint16_t)dt;
-		while(SPI1->SR & SPI_SR_RXNE);
-		(void) SPI1->DR;
-	NSS_SET;
+uint8_t SPI_transfer_data(uint8_t dt){
+	SPI1->DR = dt;
+	while(!(SPI1->SR & SPI_SR_TXE));
+	while(SPI1->SR & SPI_SR_RXNE);
+	return SPI1->DR;
 }

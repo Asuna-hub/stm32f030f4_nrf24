@@ -9,13 +9,8 @@
 //CE
 #define NRF24_CE_HIGH  GPIOB->BSRR = GPIO_BSRR_BS_1;
 #define NRF24_CE_LOW   GPIOB->BSRR = GPIO_BSRR_BR_1;
-
-//RF setup register
-#define NRF24_PLL_LOCK		  4
-#define NRF24_RF_DR_LOW		  5
-#define NRF24_RF_DR_HIGH	  3
-#define NRF24_RF_DR			  3
-#define NRF24_RF_PWR	      1 //2 bits   
+ 
+#define NRF24_CONFIG			((1 << NRF24_EN_CRC) | (0 << NRF24_CRCO))
 
 
 typedef enum {
@@ -26,10 +21,18 @@ typedef enum {
 //Data rate
 //--------------------------------------------------------------
 typedef enum{
-	NRF24_DataRate_1M,	// 2Mbps
-	NRF24_DataRate_2M		// 1Mbps
+	NRF24_DataRate_1M,	// 1Mbps
+	NRF24_DataRate_2M,	// 2Mbps
+	NRF24_DataRate_250k	//
 }NRF24_DataRate_t;
 //--------------------------------------------------------------
+
+typedef enum {
+	NRF24_OutputPower_M18dBm,	// -18dBm
+	NRF24_OutputPower_M12dBm,	// -12dBm
+	NRF24_OutputPower_M6dBm,	// -6dBm
+	NRF24_OutputPower_0dBm	  // 0dBm
+} NRF24_OutputPower_t;
 
 
 //Config registers
@@ -73,7 +76,7 @@ typedef enum {
   NRF24_REG_RX_PW_P3 = 0x14, // Number of bytes in RX payload in data pipe 3
   NRF24_REG_RX_PW_P4 = 0x15, // Number of bytes in RX payload in data pipe 4
   NRF24_REG_RX_PW_P5 = 0x16  // Number of bytes in RX payload in data pipe 5
-} nRF24_PacketSizeReg_t;
+} NRF24_PacketSizeReg_t;
 //--------------------------------------------------------------
 
 
@@ -127,7 +130,7 @@ enum NRF24_StatusBits {
   NRF24_STATUS_RX_DR       = 0x40   // Data Ready RX FIFO interrupt. Asserted when new data arrives RX FIFO. Write 1 to clear bit.
 };
 
-struct nRF24L01_STATUS_REG_BITS {
+struct NRF24_STATUS_REG_BITS {
   uint8_t TX_FULL : 1; // bit 0: TX FIFO is full
   uint8_t RX_P_NO : 3; // bit 1 - 3: number of pipe
   uint8_t MAX_RT  : 1; // bit 4: max. number of retransmissions exceeded
@@ -137,23 +140,10 @@ struct nRF24L01_STATUS_REG_BITS {
 };
 
 typedef  union {
-    struct nRF24L01_STATUS_REG_BITS bit;
+    struct NRF24_STATUS_REG_BITS bit;
     uint8_t all;
-} nRF24L01_STATUS_REGISTER;
+} NRF24_STATUS_REGISTER;
 //--------------------------------------------------------------
-
-
-// RF_SETUP register bits
-//--------------------------------------------------------------
-typedef enum {
-  NRF24_RF_SETUP_RF_PWR     = 0x06,  // RF output power mask
-  NRF24_RF_SETUP_RF_DR_HIGH = 0x08, // High data rate bit
-  NRF24_RF_SETUP_PLL_LOCK   = 0x10,  // PLL lock
-  NRF24_RF_SETUP_RF_DR_LOW  = 0x20,  // Low data rate bit  
-  NRF24_RF_SETUP_CONT_WAVE  = 0x80   // Continuous carrier transmit
-} NRF24_RfSetupBits_t;
-//--------------------------------------------------------------
-
 
 // FIFO_STATUS register bits
 //--------------------------------------------------------------
@@ -187,7 +177,77 @@ struct NRF24_CONFIG_REG_BITS {
   uint8_t res         : 1; // Reserved
 };
 
+//---------------------------------------------------------------
+
+//RF setup registers
+/*----------------------------------------------------------------*/
+#define NRF24_PLL_LOCK		  4
+#define NRF24_RF_DR_LOW		  5
+#define NRF24_RF_DR_HIGH	  3
+#define NRF24_RF_DR			    3
+#define NRF24_RF_PWR        1 //2 bits  
+
+/*struct NRF24_RF_SETUP_BITS{
+	uint8_t RF_PWR      : 2;  // Bits 0-1: RF output power (00=-18dBm, 01=-12dBm, 10=-6dBm, 11=0dBm)
+	uint8_t reserved1   : 1;  // Bit 2: reserved
+  uint8_t RF_DR_HIGH  : 1;  // Bit 3: baud rate (high bit)
+  uint8_t PLL_LOCK    : 1;  // Bit 4: PLL lock (only read)
+  uint8_t RF_DR_LOW   : 1;  // Bit 5: baud rate (low bit)
+  uint8_t reserved2   : 1;  // Bit 6: reserved
+  uint8_t CONT_WAVE   : 1;  // Bit 7: Continuous carrier(test mode)
+};*/
+struct NRF24_SETUP_RETR_REG_BITS {
+    uint8_t ARC : 4; //0..3
+    uint8_t ARDa : 4; //4..7
+};
+typedef  union {
+    struct NRF24_SETUP_RETR_REG_BITS bit;
+    uint8_t all;
+} nRF24L01_SETUP_RETR_REGISTER;
+
+typedef enum {
+  NRF24_RF_SETUP_RF_PWR     = 0x06,  // RF output power mask
+  NRF24_RF_SETUP_RF_DR_HIGH = 0x08,  // High data rate bit
+  NRF24_RF_SETUP_PLL_LOCK   = 0x10,  // PLL lock
+  NRF24_RF_SETUP_RF_DR_LOW  = 0x20,  // Low data rate bit  
+  NRF24_RF_SETUP_CONT_WAVE  = 0x80   // Continuous carrier transmit
+} NRF24_RfSetupBits_t;
+
+/*----------------------------------------------------------------*/
 // Timings
 #define NRF24_CE_TIME_mkS			10
 
+
+
+//Functions
+uint8_t NRF24_ReadReg(uint8_t rg); // read single register
+
+void NRF24_WriteReg(uint8_t rg, uint8_t dt); // write single register
+
+void NRF24_WriteBit(uint8_t rg, uint8_t bit, BitAction value); // write bit to nrf24 register
+
+void NRF24_WritePayload(uint8_t *data, uint8_t data_size); // Write data to transmission
+
+void NRF24_WriteRegm(uint8_t reg, uint8_t *data, uint8_t len); 
+/**
+* Write multibyte register
+* @param reg - register
+* @param data - pointer to data
+* @param len - count of bytes
+**/
+
+void NRF24_ClearStatus(void);
+
+void NRF24_FLUSH_RX(void);
+void NRF24_FLUSH_TX(void);
+void NRF24_RX_Config(void);
+void NRF24_writeTX(uint8_t *data);
+uint8_t NRF24_ReadReg(uint8_t rg);
+uint8_t NRF24_ReadRX(uint8_t *result, uint8_t result_size);
+NRF24_STATUS_REGISTER NRF24_ReadStatus();
+void NRF24_SetRF(NRF24_DataRate_t dr, NRF24_OutputPower_t pow);
+void NRF24_Set_my_addr(uint8_t *addr);
+void NRF24_Set_tx_addr(uint8_t *addr);
+void NRF24_SelectChannel(uint8_t ch);
+void NRF24_Init(void);
 #endif

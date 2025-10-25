@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define LED_Toggle GPIOA->ODR ^= GPIO_ODR_4;
 #define LED_On     GPIOA->BSRR = GPIO_BSRR_BS_4;
 #define LED_Off    GPIOA->BRR = GPIO_BSRR_BR_4;
 
@@ -25,7 +24,14 @@ uint8_t TxAddress[] = {
 	0x7E,
 	0x7E
 };
-
+void LED_Toggle(void){
+	for (int i = 0; i < 10; i++){
+		LED_On;
+		delay_mS(1000);
+		LED_Off;
+		delay_mS(1000);
+	}
+}
 void LED_init(void){
 	RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
 	
@@ -56,10 +62,11 @@ int main(void){
 	
  while (1){
 	status_reg = NRF24_ReadStatus();
-	LED_Toggle;
+	LED_Toggle();
 	NRF24_writeTX(str);
 	do {
-			status_reg = NRF24_ReadStatus();
+		status_reg = NRF24_ReadStatus();
+		delay_mS(1);
 	} while (status_reg.bit.MAX_RT == 0 && status_reg.bit.TX_DS == 0);
 	
 	NRF24_ClearStatus();
@@ -83,12 +90,16 @@ int main(void){
 			NRF24_ReadRX(dataIn, 32);
 			
 			int ret = memcmp(dataIn, str, 32);
-			if (ret == 0)
-					successfulTransactions++;
-			else
-					badTransactions++;
+			if (ret == 0){
+				successfulTransactions++;
+				LED_On;
+			}
+			else{
+				badTransactions++;
+				LED_Off;
+			}
 		}        
-
+	delay_mS(1000);
 	status_reg = NRF24_ReadStatus();
 	}
 }

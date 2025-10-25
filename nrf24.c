@@ -3,12 +3,12 @@
 //main functions
 
 void NRF24_Init(void){
+	SPI1_Init();
 	SPI1_NRF24_GPIO_Init();
 	
 	NRF24_CSN_HIGH;
 	NRF24_CE_LOW;
 	
-	SPI1_Init();
 	//select channel
 	NRF24_WriteReg(NRF24_REG_RF_CH, 15);
 	
@@ -110,7 +110,7 @@ void NRF24_FLUSH_RX(void){
 }
 void NRF24_FLUSH_TX(void){
 	NRF24_CSN_LOW;
-	SPI_transfer_data(NRF24_CMD_FLUSH_RX);
+	SPI_transfer_data(NRF24_CMD_FLUSH_TX);
 	NRF24_CSN_HIGH;
 }
 

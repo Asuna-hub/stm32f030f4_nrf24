@@ -17,6 +17,7 @@ void SPI1_Init(void){
 	SPI1->CR2 &= ~SPI_CR2_FRXTH; // Trigger on 8 bit
 	SPI1->CR2 &= ~SPI_CR2_SSOE; // 
 	SPI1->CR2 &= ~SPI_CR2_NSSP; //NSSP mode disable 
+	
 	SPI1->CR1 |= SPI_CR1_SPE; //SPI enable
 }
 
@@ -48,7 +49,8 @@ void SPI1_NRF24_GPIO_Init(void){
 	//PA6 - MISO, input mode
 	GPIOA->MODER &= ~GPIO_MODER_MODER6;
 	
-	GPIOA->AFR[0] |= GPIO_AFRL_AFRL6;
+	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEEDR6_0;
+	GPIOA->OSPEEDR &= ~GPIO_OSPEEDR_OSPEEDR6_1;
 	
 	//PA7 - MOSI, AF output Push-pull
 	GPIOA->MODER |= GPIO_MODER_MODER7_1;
@@ -70,7 +72,7 @@ void SPI1_NRF24_GPIO_Init(void){
 	GPIOB->OSPEEDR |= GPIO_OSPEEDR_OSPEEDR1_0;
 	GPIOB->OSPEEDR &= ~GPIO_OSPEEDR_OSPEEDR1_1;
 	
-	GPIOB->BSRR = GPIO_BSRR_BS_1;
+	GPIOB->BSRR = GPIO_BSRR_BR_1;
 	//PA0 - IRQ
 	GPIOA->MODER &= ~GPIO_MODER_MODER0;
 	
@@ -80,8 +82,10 @@ void SPI1_NRF24_GPIO_Init(void){
 
 
 uint8_t SPI_transfer_data(uint8_t dt){
-	SPI1->DR = dt;
 	while(!(SPI1->SR & SPI_SR_TXE));
-	while(SPI1->SR & SPI_SR_RXNE);
-	return SPI1->DR;
+	SPI1->DR = dt;
+	if(!(SPI1->SR & SPI_SR_RXNE))
+		return SPI1->DR;
+	else
+		return 0;
 }

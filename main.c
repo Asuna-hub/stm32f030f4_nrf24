@@ -3,9 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 
-#define LED_On     GPIOA->BSRR = GPIO_BSRR_BS_4;
-#define LED_Off    GPIOA->BRR = GPIO_BSRR_BR_4;
-
 NRF24_STATUS_REGISTER status_reg;
 
 /* My address */
@@ -24,82 +21,75 @@ uint8_t TxAddress[] = {
 	0x7E,
 	0x7E
 };
-void LED_Toggle(void){
-	for (int i = 0; i < 10; i++){
-		LED_On;
-		delay_mS(1000);
-		LED_Off;
-		delay_mS(1000);
-	}
+void Module1_Transmitter(void) {
+    NRF24_Init();
+    
+    NRF24_Set_tx_addr(MyAddress);
+    NRF24_Set_my_addr(TxAddress); 
+    
+    uint8_t counter = 0;
+    uint8_t tx_data[32] = {0};
+    
+    while(1) {
+        for(int i = 0; i < 32; i++) {
+            tx_data[i] = counter + i;
+        }
+        
+        // ??????????
+        printf("TX: Sending packet %d\r\n", counter);
+        NRF24_writeTX(tx_data);
+
+        uint8_t status = NRF24_ReadReg(NRF24_REG_STATUS);
+        printf("Status: 0x%02X\r\n", status);
+        
+        if(status & (1 << 5)) {
+            printf("TX: Success!\r\n");
+        }
+        if(status & (1 << 4)) { 
+            printf("TX: Max retries reached!\r\n");
+        }
+        
+        NRF24_ClearStatus();
+        counter++;
+        delay_mS(1000);
+    }
 }
-void LED_init(void){
-	RCC->AHBENR |= RCC_AHBENR_GPIOAEN;
-	
-	GPIOA->MODER |= GPIO_MODER_MODER4_0;
-	GPIOA->MODER &= ~GPIO_MODER_MODER4_1;
-	
-	GPIOA->OTYPER &= ~GPIO_OTYPER_OT_4;
-	
-	GPIOA->OSPEEDR |= GPIO_OSPEEDER_OSPEEDR4_0;
-	GPIOA->OSPEEDR &= ~GPIO_OSPEEDER_OSPEEDR4_1;
+
+void Module2_Receiver(void) {
+    NRF24_Init();
+    
+    NRF24_Set_my_addr(MyAddress);
+    NRF24_Set_tx_addr(TxAddress);
+    
+    NRF24_RX_Config();
+    
+    uint8_t rx_data[32] = {0};
+    uint8_t packet_count = 0;
+    
+    printf("RX: Ready to receive...\r\n");
+    
+    while(1) {
+        if(!(NRF24_ReadReg(NRF24_REG_FIFO_STATUS) & 0x01)) {
+            uint8_t status = NRF24_ReadRX(rx_data, 32);
+            
+            printf("RX: Received packet %d! Status: 0x%02X\r\n", 
+                   packet_count, status);
+            
+            printf("Data: ");
+            for(int i = 0; i < 5; i++) {
+                printf("%02X ", rx_data[i]);
+            }
+            printf("\r\n");
+            
+            packet_count++;
+            
+            NRF24_ClearStatus();
+        }
+        
+        delay_mS(100);
+    }
 }
 
 int main(void){
-	RCC_Init();
-	LED_init();
-	SysTick_Init();
-	NRF24_Init();
-	
-	NRF24_Set_my_addr(MyAddress);
-  NRF24_Set_tx_addr(TxAddress);
-	
-	uint8_t str[32] = "Hello suka by nRF24\n";
-  uint8_t dataIn[32];
-  uint16_t req = 0;
-	
-	uint16_t badTransactions = 0;
-  uint16_t successfulTransactions = 0; 
-	
- while (1){
-	status_reg = NRF24_ReadStatus();
-	LED_Toggle();
-	NRF24_writeTX(str);
-	do {
-		status_reg = NRF24_ReadStatus();
-		delay_mS(1);
-	} while (status_reg.bit.MAX_RT == 0 && status_reg.bit.TX_DS == 0);
-	
-	NRF24_ClearStatus();
-	
-	NRF24_RX_Config();
-	do {
-			status_reg = NRF24_ReadStatus();
-			req++;
-			if (req > 1000)
-			{
-					req = 0;
-					break;
-			}
-	} while (status_reg.bit.RX_DR == 0);
-	
-	if (status_reg.bit.RX_DR)
-		{
 
-			memset(dataIn, 0, 32);
-
-			NRF24_ReadRX(dataIn, 32);
-			
-			int ret = memcmp(dataIn, str, 32);
-			if (ret == 0){
-				successfulTransactions++;
-				LED_On;
-			}
-			else{
-				badTransactions++;
-				LED_Off;
-			}
-		}        
-	delay_mS(1000);
-	status_reg = NRF24_ReadStatus();
-	}
 }

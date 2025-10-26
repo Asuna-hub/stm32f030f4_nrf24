@@ -3,11 +3,12 @@
 //main functions
 
 void NRF24_Init(void){
-	SPI1_Init();
 	SPI1_NRF24_GPIO_Init();
 	
 	NRF24_CSN_HIGH;
 	NRF24_CE_LOW;
+	
+	SPI1_Init();
 	
 	//select channel
 	NRF24_WriteReg(NRF24_REG_RF_CH, 15);
@@ -34,7 +35,7 @@ void NRF24_Init(void){
 
   //Dynamic length configurations: No dynamic length
   NRF24_WriteReg(NRF24_REG_DYNPD, 0);
-    
+	
   //clear fifo`s
   NRF24_FLUSH_TX();
   NRF24_FLUSH_RX();
@@ -79,20 +80,18 @@ void NRF24_WritePayload(uint8_t *data, uint8_t data_size){
 	NRF24_CSN_LOW;
 	SPI_transfer_data(NRF24_CMD_W_TX_PAYLOAD);
 	for (int i = 0; i < data_size; i++){
-		SPI_transfer_data(*data+i);
+		SPI_transfer_data(data[i]);
 	}
 	NRF24_CSN_HIGH;
 }
 
 void NRF24_WriteRegm(uint8_t reg, uint8_t *data, uint8_t len){
-    NRF24_CSN_LOW;
-    
-    SPI_transfer_data(NRF24_CMD_W_REGISTER | reg & 0x1F);
-    while(len--)
-    {
-        SPI_transfer_data(*data++);
-    }
-    NRF24_CSN_HIGH; 
+  NRF24_CSN_LOW;
+  SPI_transfer_data(NRF24_CMD_W_REGISTER | reg & 0x1F);
+	for (int i = 0; i < len; i++){
+		SPI_transfer_data(data[i]);
+	}
+  NRF24_CSN_HIGH; 
 }
 
 void NRF24_ClearStatus(void){
@@ -113,10 +112,6 @@ void NRF24_FLUSH_TX(void){
 	SPI_transfer_data(NRF24_CMD_FLUSH_TX);
 	NRF24_CSN_HIGH;
 }
-
-
-
-
 
 void NRF24_RX_Config(void){
 	NRF24_FLUSH_RX();
@@ -145,11 +140,11 @@ uint8_t NRF24_ReadRX(uint8_t *result, uint8_t result_size){
 }
 
 NRF24_STATUS_REGISTER NRF24_ReadStatus(){
-	
-    NRF24_STATUS_REGISTER reg;
-    reg.all = SPI_transfer_data(NRF24_REG_STATUS);
-    
-    return reg; 
+	NRF24_STATUS_REGISTER reg;
+	NRF24_CSN_LOW;
+  reg.all = SPI_transfer_data(NRF24_REG_STATUS);
+	NRF24_CSN_HIGH;
+  return reg; 
 }
 
 void NRF24_SetRF(NRF24_DataRate_t dr, NRF24_OutputPower_t pow){
@@ -173,14 +168,11 @@ void NRF24_SetRF(NRF24_DataRate_t dr, NRF24_OutputPower_t pow){
     NRF24_WriteReg(NRF24_REG_RF_SETUP, tmp);
 }
 
-
-
-
 //address
 void NRF24_Set_my_addr(uint8_t *addr){
-    NRF24_CE_LOW;
-    NRF24_WriteRegm(NRF24_REG_RX_ADDR_P1,addr,5);
     NRF24_CE_HIGH;
+    NRF24_WriteRegm(NRF24_REG_RX_ADDR_P1,addr,5);
+    NRF24_CE_LOW;
 }
 
 void NRF24_Set_tx_addr(uint8_t *addr){
@@ -191,4 +183,9 @@ void NRF24_Set_tx_addr(uint8_t *addr){
 void NRF24_SelectChannel(uint8_t ch)
 {
     NRF24_WriteReg(NRF24_REG_RF_CH, ch);
+}
+
+uint8_t NRF24_IsAlive(void) {
+    uint8_t setup = NRF24_ReadReg(NRF24_REG_SETUP_AW);
+    return (setup == 0x03 || setup == 0x02);
 }

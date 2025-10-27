@@ -3,7 +3,7 @@
 uint32_t SysTick_CNT = 0;
 
 void SysTick_Init(void){
-	SysTick->LOAD = (SYSCLOCK / 1000) - 1;
+	SysTick->LOAD = (SYSCLOCK / 1000000) - 1;
 	SysTick->VAL = 0;
 	SysTick->CTRL |= SysTick_CTRL_CLKSOURCE_Msk | SysTick_CTRL_TICKINT_Msk | SysTick_CTRL_ENABLE_Msk;
 }
@@ -13,9 +13,9 @@ void SysTick_Handler(void){
     SysTick_CNT--;
 }
 
-void delay_mS(uint32_t mS){
+void delay_mkS(uint32_t mkS){
 	SysTick->VAL = 0;
-	SysTick->VAL = (SYSCLOCK / 1000) - 1;
-	SysTick_CNT = mS;
+	SysTick->VAL = (SYSCLOCK / 1000000) - 1;
+	SysTick_CNT = mkS;
 	while(SysTick_CNT);
 }

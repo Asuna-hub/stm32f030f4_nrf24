@@ -5,18 +5,14 @@ void SPI1_Init(void){
 	
 	SPI1->CR1 = 0; //reset all CR1 registers
 	SPI1->CR1 |= SPI_CR1_BR_1; // 48000000 / 8 = 6 MHz
-	SPI1->CR1 &= ~(SPI_CR1_BIDIMODE | SPI_CR1_RXONLY); //2-line unidirectional data mode, full duplex
+	SPI1->CR1 &= ~(SPI_CR1_BIDIMODE | SPI_CR1_RXONLY | SPI_CR1_BIDIOE); //2-line unidirectional data mode, full duplex
 	SPI1->CR1 &= ~(SPI_CR1_CPOL | SPI_CR1_CPHA); //[0,0] mode (CPOL - 0, CPHA - 0)
 	SPI1->CR1 &= ~SPI_CR1_LSBFIRST; //MSB first
 	SPI1->CR1 |= SPI_CR1_SSM | SPI_CR1_SSI; //Software slave management enable
 	SPI1->CR1 |= SPI_CR1_MSTR; //Master configuration
 	
 	SPI1->CR2 = 0; //reset all CR2 registers
-	SPI1->CR2 |= SPI_CR2_DS_0 | SPI_CR2_DS_1 | SPI_CR2_DS_2; // 8 bit
-	SPI1->CR2 &= ~SPI_CR2_FRF; // SPI Motorola mode
-	SPI1->CR2 &= ~SPI_CR2_FRXTH; // Trigger on 8 bit
-	SPI1->CR2 &= ~SPI_CR2_SSOE; // 
-	SPI1->CR2 &= ~SPI_CR2_NSSP; //NSSP mode disable 
+	SPI1->CR2 |= SPI_CR2_DS_0 | SPI_CR2_DS_1 | SPI_CR2_DS_2; // 8 bit 
 	
 	SPI1->CR1 |= SPI_CR1_SPE; //SPI enable
 }
@@ -44,11 +40,11 @@ void SPI1_NRF24_GPIO_Init(void){
 	GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEEDR5;
 	
 	//PA6 - MISO,
+	GPIOA->MODER &= ~GPIO_MODER_MODER6;
 	GPIOA->MODER |= GPIO_MODER_MODER6_1;
-	GPIOA->MODER &= ~GPIO_MODER_MODER6_0;
 	
 	GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR0;
-  GPIOA->PUPDR |= GPIO_PUPDR_PUPDR0_1; // Pull-down
+  //GPIOA->PUPDR |= GPIO_PUPDR_PUPDR0_0; // Pull-down
 	
 	//PA7 - MOSI, AF output Push-pull
 	GPIOA->MODER |= GPIO_MODER_MODER7_1;
@@ -77,6 +73,9 @@ void SPI1_NRF24_GPIO_Init(void){
 uint8_t SPI_transfer_data(uint8_t dt){
 	SPI1->DR = dt;
 	while(!(SPI1->SR & SPI_SR_TXE));
-	while(!(SPI1->SR & SPI_SR_RXNE));
-	return SPI1->DR;
+	if (SPI1->SR & SPI_SR_RXNE){
+		return SPI1->DR;
+	}else{
+		return 0;
+	}
 }

@@ -64,6 +64,7 @@ enum NRF24_ConfigReg{
 	NRF24_REG_STATUS      = 0x07, // Status register
 	NRF24_REG_OBSERVE_TX  = 0x08, 
 	NRF24_REG_CD          = 0x09,
+	NRF24_REG_FEATURE     = 0x1D,
 	NRF24_REG_FIFO_STATUS = 0x17
 };
 //--------------------------------------------------------------
@@ -118,8 +119,7 @@ enum NRF24_Commands{
 
 // CONFIG register bits
 //--------------------------------------------------------------
-//address NRF24_REG_CONFIG = 0x00
-enum NRF24_ConfigBits {
+/*enum NRF24_ConfigBits {
   NRF24_CONFIG_PRIM_RX     = 0x01,  // RX/TX control
   NRF24_CONFIG_PWR_UP      = 0x02,  // Power up
   NRF24_CONFIG_CRCO        = 0x04,  // CRC encoding (0=1 byte, 1=2 bytes)
@@ -128,9 +128,7 @@ enum NRF24_ConfigBits {
   NRF24_CONFIG_MASK_TX_DS  = 0x20,  // Mask TX_DS interrupt  
   NRF24_CONFIG_MASK_RX_DR  = 0x40,  // Mask RX_DR interrupt
 	NRF24_REG_FEATURE        = 0x1D
-};
-//--------------------------------------------------------------
-
+};*/
 
 // STATUS register bits
 //--------------------------------------------------------------
@@ -193,6 +191,7 @@ typedef enum {
 /*----------------------------------------------------------------*/
 
 //Functions
+void NRF24l01_init(void);
 uint8_t NRF24_ReadReg(uint8_t rg); // read single register
 void NRF24_WriteReg(uint8_t rg, uint8_t dt); // write single register
 void NRF24_WriteBit(uint8_t rg, uint8_t bit, BitAction value); // write bit to nrf24 register

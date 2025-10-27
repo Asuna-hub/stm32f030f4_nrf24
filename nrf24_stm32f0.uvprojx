@@ -439,6 +439,11 @@
               <FileType>5</FileType>
               <FilePath>.\nrf24.h</FilePath>
             </File>
+            <File>
+              <FileName>nrf24_n.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\nrf24_n.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>

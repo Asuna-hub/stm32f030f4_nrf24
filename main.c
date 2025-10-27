@@ -1,7 +1,6 @@
 #include "main.h"
 
 #include <stdio.h>
-#include <string.h>
 
 NRF24_STATUS_REGISTER status_reg;
 
@@ -51,7 +50,7 @@ void Module1_Transmitter(void) {
         
         NRF24_ClearStatus();
         counter++;
-        delay_mS(1000);
+        delay_mkS(1000);
     }
 }
 
@@ -86,10 +85,13 @@ void Module2_Receiver(void) {
             NRF24_ClearStatus();
         }
         
-        delay_mS(100);
+        delay_mkS(100);
     }
 }
 
 int main(void){
-
+	RCC_Init();
+	SysTick_Init();
+	NRF24l01_init();
+	while(1);
 }

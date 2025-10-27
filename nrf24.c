@@ -1,7 +1,29 @@
 #include "nrf24.h"
 
 //main functions
-
+void NRF24l01_init(void){
+	SPI1_Init();
+	delay_mkS(5);
+	
+	SPI1_NRF24_GPIO_Init();
+	delay_mkS(5);
+	
+	NRF24_CSN_HIGH;
+	NRF24_CE_LOW;
+	
+	delay_mkS(5);
+	NRF24_WriteReg(NRF24_REG_CONFIG, 1 << NRF24_PWR_UP | 1 << NRF24_EN_CRC);
+	delay_mkS(5);
+	NRF24_WriteReg(NRF24_REG_EN_AA, 0x02); // enable pipe1
+	NRF24_WriteReg(NRF24_REG_EN_RXADDR, 0x02);
+	NRF24_WriteReg(NRF24_REG_SETUP_AW, 0x01);
+	NRF24_WriteReg(NRF24_REG_SETUP_RETR, 0x5F);
+	NRF24_WriteReg(NRF24_REG_FEATURE, 0);
+	NRF24_WriteReg(NRF24_REG_DYNPD, 0);
+	NRF24_WriteReg(NRF24_REG_STATUS, 0x70);
+	NRF24_WriteReg(NRF24_REG_RF_CH, 76);
+	NRF24_WriteReg(NRF24_REG_RF_SETUP, 0x06); //TX_PWR:0dBm, Datarate:1Mbps
+}
 void NRF24_Init(void){
 	SPI1_NRF24_GPIO_Init();
 	
@@ -9,7 +31,6 @@ void NRF24_Init(void){
 	NRF24_CE_LOW;
 	
 	SPI1_Init();
-	
 	//select channel
 	NRF24_WriteReg(NRF24_REG_RF_CH, 15);
 	
@@ -58,10 +79,9 @@ uint8_t NRF24_ReadReg(uint8_t rg){
 
 void NRF24_WriteReg(uint8_t rg, uint8_t dt){
 	NRF24_CSN_LOW;
-	
-	SPI_transfer_data(NRF24_CMD_W_REGISTER | rg & 0x1F);
+	uint8_t write = NRF24_CMD_W_REGISTER | rg & 0x1F;
+	SPI_transfer_data(write);
 	SPI_transfer_data(dt);
-	
 	NRF24_CSN_HIGH;
 }
 
@@ -148,16 +168,16 @@ NRF24_STATUS_REGISTER NRF24_ReadStatus(){
 }
 
 void NRF24_SetRF(NRF24_DataRate_t dr, NRF24_OutputPower_t pow){
-    uint8_t tmp = 0;
-    if (dr == NRF24_DataRate_2M)
-    {
-        tmp |= 1 << NRF24_RF_DR_HIGH;
-    } else if (dr == NRF24_DataRate_250k) {
+	uint8_t tmp = 0;
+	if (dr == NRF24_DataRate_2M)
+	{
+		tmp |= 1 << NRF24_RF_DR_HIGH;
+	} else if (dr == NRF24_DataRate_250k) {
 		tmp |= 1 << NRF24_RF_DR_LOW;
 	}
 	//If 1Mbps, all bits set to 0
-    
-  	if (pow == NRF24_OutputPower_0dBm) {
+	
+	if (pow == NRF24_OutputPower_0dBm) {
 		tmp |= 3 << NRF24_RF_PWR;
 	} else if (pow == NRF24_OutputPower_M6dBm) {
 		tmp |= 2 << NRF24_RF_PWR;
@@ -165,7 +185,7 @@ void NRF24_SetRF(NRF24_DataRate_t dr, NRF24_OutputPower_t pow){
 		tmp |= 1 << NRF24_RF_PWR;
 	}
 
-    NRF24_WriteReg(NRF24_REG_RF_SETUP, tmp);
+	NRF24_WriteReg(NRF24_REG_RF_SETUP, tmp);
 }
 
 //address

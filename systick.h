@@ -8,6 +8,6 @@
 extern uint32_t SysTick_CNT;
 
 void SysTick_Init(void);
-void delay_mkS(uint32_t mkS);
+void delay_uS(uint32_t uS);
 
 #endif

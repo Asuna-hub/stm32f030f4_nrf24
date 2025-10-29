@@ -13,9 +13,9 @@ void SysTick_Handler(void){
     SysTick_CNT--;
 }
 
-void delay_mkS(uint32_t mkS){
+void delay_uS(uint32_t uS){
 	SysTick->VAL = 0;
 	SysTick->VAL = (SYSCLOCK / 1000000) - 1;
-	SysTick_CNT = mkS;
+	SysTick_CNT = uS;
 	while(SysTick_CNT);
 }

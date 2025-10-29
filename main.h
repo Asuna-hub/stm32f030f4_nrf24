@@ -6,6 +6,5 @@
 #include "systick.h"
 #include "spi.h"
 #include "nrf24.h"
-#include <string.h>
 
 #endif

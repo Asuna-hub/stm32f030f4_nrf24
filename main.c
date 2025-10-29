@@ -50,7 +50,7 @@ void Module1_Transmitter(void) {
         
         NRF24_ClearStatus();
         counter++;
-        delay_mkS(1000);
+        delay_uS(1000);
     }
 }
 
@@ -85,7 +85,7 @@ void Module2_Receiver(void) {
             NRF24_ClearStatus();
         }
         
-        delay_mkS(100);
+        delay_uS(100);
     }
 }
 

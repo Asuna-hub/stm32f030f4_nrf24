@@ -3,16 +3,6 @@
 
 #include "main.h"
 
-
-#define NRF24_READ_REGISTER(reg_type, reg_addr) \
-    ({ \
-        reg_type reg; \
-        NRF24_CSN_LOW; \
-        reg.all = NRF24_ReadReg(reg_addr); \
-        NRF24_CSN_HIGH; \
-        reg; \
-    })
-
 //CSN
 #define NRF24_CSN_HIGH GPIOA->BSRR = GPIO_BSRR_BS_4
 #define NRF24_CSN_LOW  GPIOA->BSRR = GPIO_BSRR_BR_4
@@ -25,17 +15,17 @@
 //Configuration bits
 #define NRF24_MASK_RX_DR		6
 #define NRF24_MASK_TX_DS		5
-#define NRF24_MASK_MAX_RT	  4
-#define NRF24_EN_CRC			  3
+#define NRF24_MASK_MAX_RT	    4
+#define NRF24_EN_CRC			3
 #define NRF24_CRCO			    2
-#define NRF24_PWR_UP			  1
+#define NRF24_PWR_UP			1
 #define NRF24_PRIM_RX		    0
 
 #define NRF24_PLL_LOCK		  4
 #define NRF24_RF_DR_LOW		  5
 #define NRF24_RF_DR_HIGH	  3
-#define NRF24_RF_DR			    3
-#define NRF24_RF_PWR        1 //2 bits 
+#define NRF24_RF_DR			  3
+#define NRF24_RF_PWR          1 //2 bits 
 
 #define NRF24_ENAA_PO       0
 #define NRF24_ENAA_P1       1
@@ -45,18 +35,18 @@
 #define NRF24_ENAA_P5       5
 
 //EX_RXADDR bits
-#define NRF24_ERX_P5_ON		 (1 << 5)
-#define NRF24_ERX_P5_OFF   (0 << 5)
-#define NRF24_ERX_P4_ON		 (1 << 4)
-#define NRF24_ERX_P4_OFF   (0 << 4)
-#define NRF24_ERX_P3_ON		 (1 << 3)
-#define NRF24_ERX_P3_OFF   (0 << 3)
-#define NRF24_ERX_P2_ON		 (1 << 2)
-#define NRF24_ERX_P2_OFF   (0 << 2)
-#define NRF24_ERX_P1_ON		 (1 << 1)
-#define NRF24_ERX_P1_OFF   (0 << 1)
-#define NRF24_ERX_P0_ON		 (1 << 0)
-#define NRF24_ERX_P0_OFF   (0 << 0)
+#define NRF24_ERX_P5_ON		(1 << 5)
+#define NRF24_ERX_P5_OFF    (0 << 5)
+#define NRF24_ERX_P4_ON		(1 << 4)
+#define NRF24_ERX_P4_OFF    (0 << 4)
+#define NRF24_ERX_P3_ON		(1 << 3)
+#define NRF24_ERX_P3_OFF    (0 << 3)
+#define NRF24_ERX_P2_ON		(1 << 2)
+#define NRF24_ERX_P2_OFF    (0 << 2)
+#define NRF24_ERX_P1_ON		(1 << 1)
+#define NRF24_ERX_P1_OFF    (0 << 1)
+#define NRF24_ERX_P0_ON		(1 << 0)
+#define NRF24_ERX_P0_OFF    (0 << 0)
 
 //SETUP_AW bits
 #define NRF24_SETUP_AW_3bytes (1 << 0)
@@ -141,7 +131,8 @@ enum NRF24_ConfigReg{
 	NRF24_REG_OBSERVE_TX  = 0x08, 
 	NRF24_REG_RPD         = 0x09,
 	NRF24_REG_FEATURE     = 0x1D,
-	NRF24_REG_FIFO_STATUS = 0x17
+	NRF24_REG_FIFO_STATUS = 0x17,
+	NRF24_REG_DYNPD       = 0x1C
 };
 //--------------------------------------------------------------
 
@@ -149,10 +140,10 @@ enum NRF24_ConfigReg{
 //--------------------------------------------------------------
 #define NRF24_MASK_RX_DR		6
 #define NRF24_MASK_TX_DS		5
-#define NRF24_MASK_MAX_RT	  4
-#define NRF24_EN_CRC			  3
+#define NRF24_MASK_MAX_RT	    4
+#define NRF24_EN_CRC			3
 #define NRF24_CRCO			    2
-#define NRF24_PWR_UP			  1
+#define NRF24_PWR_UP            1
 #define NRF24_PRIM_RX		    0
 
 struct NRF24_REG_CONFIG_BITS {
@@ -178,7 +169,7 @@ struct NRF24_REG_EN_AA_BITS{
 	uint8_t ENAA_P3 : 1;
 	uint8_t ENAA_P4 : 1;
 	uint8_t ENAA_P5 : 1;
-	uint8_t reserved : 3;
+	uint8_t reserved : 2;
 };
 typedef  union {
     struct NRF24_REG_EN_AA_BITS bit;
@@ -192,7 +183,7 @@ struct NRF24_REG_EN_RXADDR_BITS{
 	uint8_t ERX_P3 : 1;
 	uint8_t ERX_P4 : 1;
 	uint8_t ERX_P5 : 1;
-	uint8_t reserved : 3;
+	uint8_t reserved : 2;
 };
 typedef  union {
     struct NRF24_REG_EN_RXADDR_BITS bit;
@@ -248,8 +239,8 @@ struct NRF24_STATUS_REG_BITS {
   uint8_t TX_FULL   : 1;  // Бит 0: Data Ready RX FIFO
   uint8_t RX_P_NO   : 3;  // Бит 1: Data Sent TX FIFO  
   uint8_t MAX_RT  	: 1;  // Бит 2: Max Retransmits
-  uint8_t TX_DS			: 1;  // Бит 3: Reserved
-  uint8_t RX_DR 		: 1;  // Биты 4-6: Pipe Number for RX payload
+  uint8_t TX_DS		: 1;  // Бит 3: Reserved
+  uint8_t RX_DR 	: 1;  // Биты 4-6: Pipe Number for RX payload
   uint8_t reserved 	: 1;  // Бит 7: TX FIFO Full
 };
 
@@ -291,7 +282,6 @@ enum nRF24_AddressReg{
 //Packet size registers
 //--------------------------------------------------------------
 typedef enum {
-	NRF24_REG_DYNPD    = 0x1C,
   NRF24_REG_RX_PW_P0 = 0x11, // Number of bytes in RX payload in data pipe 0 (1 to 32 bytes).
   NRF24_REG_RX_PW_P1 = 0x12, // Number of bytes in RX payload in data pipe 1
   NRF24_REG_RX_PW_P2 = 0x13, // Number of bytes in RX payload in data pipe 2
@@ -304,11 +294,11 @@ typedef enum {
 struct NRF24_FIFO_STATUS_REG_BITS{
 	uint8_t RX_EMPTY 	: 1;
 	uint8_t RX_FULL 	: 1;
-	uint8_t reserved1 : 2;
+	uint8_t reserved1   : 2;
 	uint8_t TX_EMPTY 	: 1;
 	uint8_t TX_FULL 	: 1;
 	uint8_t TX_REUSE 	: 1;
-	uint8_t reserved2 : 1;
+	uint8_t reserved2   : 1;
 };
 typedef  union {
     struct NRF24_FIFO_STATUS_REG_BITS bit;

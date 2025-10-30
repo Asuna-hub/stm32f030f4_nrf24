@@ -13,20 +13,22 @@
 #define NRF24_CONFIG	 ((1 << NRF24_EN_CRC) | (0 << NRF24_CRCO))
 
 //Configuration bits
-#define NRF24_MASK_RX_DR		6
-#define NRF24_MASK_TX_DS		5
-#define NRF24_MASK_MAX_RT	    4
-#define NRF24_EN_CRC			3
-#define NRF24_CRCO			    2
-#define NRF24_PWR_UP			1
-#define NRF24_PRIM_RX		    0
+#define NRF24_MASK_RX_DR     6
+#define NRF24_MASK_TX_DS     5
+#define NRF24_MASK_MAX_RT	 4
+#define NRF24_EN_CRC         3
+#define NRF24_CRCO			 2
+#define NRF24_PWR_UP         1
+#define NRF24_PRIM_RX        0
 
-#define NRF24_PLL_LOCK		  4
-#define NRF24_RF_DR_LOW		  5
-#define NRF24_RF_DR_HIGH	  3
-#define NRF24_RF_DR			  3
+//RF_Setup
+#define NRF24_PLL_LOCK        4
+#define NRF24_RF_DR_LOW       5
+#define NRF24_RF_DR_HIGH      3
+#define NRF24_RF_DR           3
 #define NRF24_RF_PWR          1 //2 bits 
 
+//Enable autoacknowledge
 #define NRF24_ENAA_PO       0
 #define NRF24_ENAA_P1       1
 #define NRF24_ENAA_P2       2
@@ -92,6 +94,13 @@
 #define NRF24_SETUP_RETR_ARC_14		(0xE)
 #define NRF24_SETUP_RETR_ARC_15		(0xF)
 
+//DPL
+#define NRF24_DPL_P5  5
+#define NRF24_DPL_P4  4
+#define NRF24_DPL_P3  3
+#define NRF24_DPL_P2  2
+#define NRF24_DPL_P1  1
+#define NRF24_DPL_P0  0
 
 typedef enum {
   Bit_RESET = 0,
@@ -100,8 +109,8 @@ typedef enum {
 //Data rate
 //--------------------------------------------------------------
 typedef enum{
-  NRF24_DataRate_1M   = 0x00, // 00: 1 Mbps
-  NRF24_DataRate_2M   = 0x08, // 08: 2 Mbps (бит 3 = 1)  
+    NRF24_DataRate_1M   = 0x00, // 00: 1 Mbps
+    NRF24_DataRate_2M   = 0x08, // 08: 2 Mbps (бит 3 = 1)  
 	NRF24_DataRate_250k = 0x20  // 20: 250 Kbps (бит 5 = 1)
 } NRF24_DataRate_t;
 //--------------------------------------------------------------
@@ -115,7 +124,7 @@ typedef enum {
 
 
 //                               REGISTERS
-/*======================================================================*/
+/*===============================================================================*/
 
 //Config registers
 //--------------------------------------------------------------
@@ -130,22 +139,31 @@ enum NRF24_ConfigReg{
 	NRF24_REG_STATUS      = 0x07, // Status register
 	NRF24_REG_OBSERVE_TX  = 0x08, 
 	NRF24_REG_RPD         = 0x09,
-	NRF24_REG_FEATURE     = 0x1D,
 	NRF24_REG_FIFO_STATUS = 0x17,
-	NRF24_REG_DYNPD       = 0x1C
+	NRF24_REG_DYNPD       = 0x1C,
+	NRF24_REG_FEATURE     = 0x1D
 };
-//--------------------------------------------------------------
+enum nRF24_AddressReg{
+  NRF24_REG_RX_ADDR_P0 = 0x0A, // receive address data pipe
+  NRF24_REG_RX_ADDR_P1 = 0x0B,
+  NRF24_REG_RX_ADDR_P2 = 0x0C,
+  NRF24_REG_RX_ADDR_P3 = 0x0D,
+  NRF24_REG_RX_ADDR_P4 = 0x0E,
+  NRF24_REG_RX_ADDR_P5 = 0x0F,
+  NRF24_REG_TX_ADDR    = 0x10  //Transmit address
+};
+typedef enum {
+  NRF24_REG_RX_PW_P0 = 0x11, // Number of bytes in RX payload in data pipe 0 (1 to 32 bytes).
+  NRF24_REG_RX_PW_P1 = 0x12, // Number of bytes in RX payload in data pipe 1
+  NRF24_REG_RX_PW_P2 = 0x13, // Number of bytes in RX payload in data pipe 2
+  NRF24_REG_RX_PW_P3 = 0x14, // Number of bytes in RX payload in data pipe 3
+  NRF24_REG_RX_PW_P4 = 0x15, // Number of bytes in RX payload in data pipe 4
+  NRF24_REG_RX_PW_P5 = 0x16  // Number of bytes in RX payload in data pipe 5
+} NRF24_PacketSizeReg_t;
+/*===============================================================================*/
 
-//NRF24_REG_CONFIG
-//--------------------------------------------------------------
-#define NRF24_MASK_RX_DR		6
-#define NRF24_MASK_TX_DS		5
-#define NRF24_MASK_MAX_RT	    4
-#define NRF24_EN_CRC			3
-#define NRF24_CRCO			    2
-#define NRF24_PWR_UP            1
-#define NRF24_PRIM_RX		    0
-
+//                                 BITS
+/*===============================================================================*/
 struct NRF24_REG_CONFIG_BITS {
   uint8_t PRIM_RX     : 1;  // Бит 0: RX/TX control (1=RX, 0=TX)
   uint8_t PWR_UP      : 1;  // Бит 1: Power up (1=Power Up, 0=Power Down)
@@ -202,7 +220,7 @@ typedef  union {
 //--------------------------------------------------------------
 
 struct NRF24_SETUP_RETR_REG_BITS {
-    uint8_t ARC : 4; //0..3
+    uint8_t ARC  : 4; //0..3
     uint8_t ARDa : 4; //4..7
 };
 typedef  union {
@@ -239,8 +257,8 @@ struct NRF24_STATUS_REG_BITS {
   uint8_t TX_FULL   : 1;  // Бит 0: Data Ready RX FIFO
   uint8_t RX_P_NO   : 3;  // Бит 1: Data Sent TX FIFO  
   uint8_t MAX_RT  	: 1;  // Бит 2: Max Retransmits
-  uint8_t TX_DS		: 1;  // Бит 3: Reserved
-  uint8_t RX_DR 	: 1;  // Биты 4-6: Pipe Number for RX payload
+  uint8_t TX_DS			: 1;  // Бит 3: Reserved
+  uint8_t RX_DR 		: 1;  // Биты 4-6: Pipe Number for RX payload
   uint8_t reserved 	: 1;  // Бит 7: TX FIFO Full
 };
 
@@ -268,37 +286,17 @@ typedef  union {
     struct NRF24_RPD_REG_BITS bit;
     uint8_t all;
 } NRF24_RPD_REGISTER;
-//Address registers 
-//--------------------------------------------------------------
-enum nRF24_AddressReg{
-  NRF24_REG_RX_ADDR_P0 = 0x0A, // receive address data pipe
-  NRF24_REG_RX_ADDR_P1 = 0x0B,
-  NRF24_REG_RX_ADDR_P2 = 0x0C,
-  NRF24_REG_RX_ADDR_P3 = 0x0D,
-  NRF24_REG_RX_ADDR_P4 = 0x0E,
-  NRF24_REG_RX_ADDR_P5 = 0x0F,
-  NRF24_REG_TX_ADDR    = 0x10  //Transmit address
-};
-//Packet size registers
-//--------------------------------------------------------------
-typedef enum {
-  NRF24_REG_RX_PW_P0 = 0x11, // Number of bytes in RX payload in data pipe 0 (1 to 32 bytes).
-  NRF24_REG_RX_PW_P1 = 0x12, // Number of bytes in RX payload in data pipe 1
-  NRF24_REG_RX_PW_P2 = 0x13, // Number of bytes in RX payload in data pipe 2
-  NRF24_REG_RX_PW_P3 = 0x14, // Number of bytes in RX payload in data pipe 3
-  NRF24_REG_RX_PW_P4 = 0x15, // Number of bytes in RX payload in data pipe 4
-  NRF24_REG_RX_PW_P5 = 0x16  // Number of bytes in RX payload in data pipe 5
-} NRF24_PacketSizeReg_t;
+
 //--------------------------------------------------------------
 
 struct NRF24_FIFO_STATUS_REG_BITS{
 	uint8_t RX_EMPTY 	: 1;
 	uint8_t RX_FULL 	: 1;
-	uint8_t reserved1   : 2;
+	uint8_t reserved1 : 2;
 	uint8_t TX_EMPTY 	: 1;
 	uint8_t TX_FULL 	: 1;
 	uint8_t TX_REUSE 	: 1;
-	uint8_t reserved2   : 1;
+	uint8_t reserved2 : 1;
 };
 typedef  union {
     struct NRF24_FIFO_STATUS_REG_BITS bit;
@@ -332,10 +330,10 @@ typedef  union {
     struct NRF24_FEATURE_REG_BITS bit;
     uint8_t all;
 } NRF24_FEATURE_REGISTER;
-/*============================================================================*/
+/*===============================================================================*/
 
 //                                 Commands
-/*============================================================================*/
+/*===============================================================================*/
 enum NRF24_Commands{
 	NRF24_CMD_R_REGISTER         = 0x00, // read command and status registers
 	NRF24_CMD_W_REGISTER         = 0x20, // write command and status registers
@@ -344,18 +342,15 @@ enum NRF24_Commands{
 	NRF24_CMD_FLUSH_TX           = 0xE1, // Flush TX FIFO, used in TX mode
 	NRF24_CMD_FLUSH_RX           = 0xE2, // Flush RX FIFO, used in RX mode
 	NRF24_CMD_REUSE_TX_PL        = 0xE3, // Used for a PTX device. Reuse last transmitted payload
-	NRF24_CMD_ACTIVATE           = 0x50, // This write command followed by data 0x73 activates the following features:
-                                       // • R_RX_PL_WID
-                                       // • W_ACK_PAYLOAD
-                                       // • W_TX_PAYLOAD_NOACK
 	NRF24_CMD_R_RX_PL_WID        = 0x60, // Read RX-payload width for the top R_RX_PAYLOAD in the RX FIFO.
 	NRF24_CMD_W_ACK_PAYLOAD      = 0xA8, // Used in RX mode. Write Payload to be transmitted together with ACK packet on PIPE PPP
 	NRF24_CMD_W_TX_PAYLOAD_NOACK = 0xB0, // Used in TX mode. Disables AUTOACK on this specific packet.
 	NRF24_CMD_NOP                = 0xFF  // No Operation. Might be used to read the STATUS register
 };
-/*============================================================================*/
+/*==============================================================================*/
 
-//Functions
+//                                  Functions
+/*==============================================================================*/
 void NRF24l01_init(void);
 uint8_t NRF24_ReadReg(uint8_t rg); // read single register
 void NRF24_WriteReg(uint8_t rg, uint8_t dt); // write single register
@@ -369,8 +364,6 @@ void NRF24_RX_Config(void);
 void NRF24_writeTX(uint8_t *data);
 uint8_t NRF24_ReadReg(uint8_t rg);
 uint8_t NRF24_ReadRX(uint8_t *result, uint8_t result_size);
-NRF24_STATUS_REGISTER NRF24_ReadStatus();
-NRF24_CONFIG_REGISTER NRF24_ReadConfig();
 void NRF24_SetRF(NRF24_DataRate_t dr, NRF24_OutputPower_t pow);
 void NRF24_Set_my_addr(uint8_t *addr);
 void NRF24_Set_tx_addr(uint8_t *addr);
@@ -379,6 +372,8 @@ void NRF24_Init(void);
 
 //READ
 void NRF24_ReadAllRegisters();
+NRF24_STATUS_REGISTER NRF24_ReadStatus();
+NRF24_CONFIG_REGISTER NRF24_ReadConfig();
 NRF24_EN_AA_REGISTER NRF24_Read_EN_AA();
 NRF24_EN_RXADDR_REGISTER NRF24_Read_EN_RXADDR();
 NRF24_SETUP_AW_REGISTER NRF24_Read_Setup_AW();

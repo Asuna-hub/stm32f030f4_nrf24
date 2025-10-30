@@ -10,7 +10,7 @@
 ## 🇺🇸 English Version
 
 ### 📋 Project Description
-This project provides a complete driver for NRF24L01 wireless transceiver modules working with STM32F103C8T6. The implementation includes robust error handling, power management, and easy-to-use API for embedded applications.
+This project provides a complete driver for NRF24L01 wireless transceiver modules working with STM32F030F4P6. The implementation includes robust error handling, power management, and easy-to-use API for embedded applications.
 
 ### 🛠 Hardware
 - **MCU**: STM32F030F4P6
@@ -42,7 +42,7 @@ cd stm32f030f4_nrf24
 ## RU Russian Version
 
 ### 📋 Описание Проекта
-Этот проект предоставляет полный драйвер для беспроводных transceiver модулей NRF24L01, работающих с STM32F103C8T6. Реализация включает надежную обработку ошибок, управление питанием и простой в использовании API для встраиваемых приложений.
+Этот проект предоставляет полный драйвер для беспроводных transceiver модулей NRF24L01, работающих с STM32F030F4P6. Реализация включает надежную обработку ошибок, управление питанием и простой в использовании API для встраиваемых приложений.
 
 ### 🛠 Оборудование
 - **Микроконтроллер**: STM32F030F4P6

@@ -13,6 +13,7 @@ void SPI1_Init(void){
 	
 	SPI1->CR2 = 0; //reset all CR2 registers
 	SPI1->CR2 |= SPI_CR2_DS_0 | SPI_CR2_DS_1 | SPI_CR2_DS_2; // 8 bit 
+	SPI1->CR2 |= SPI_CR2_FRXTH;
 	
 	SPI1->CR1 |= SPI_CR1_SPE; //SPI enable
 }

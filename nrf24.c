@@ -18,18 +18,19 @@ void NRF24l01_init(void){
 	delay_uS(5);
 	NRF24_WriteReg(NRF24_REG_EN_AA, 1 << NRF24_ENAA_P0); // enable pipe aa
 	NRF24_WriteReg(NRF24_REG_EN_RXADDR, 1 << NRF24_ERX_P0);
-	NRF24_WriteReg(NRF24_REG_SETUP_AW, NRF24_SETUP_AW_3bytes);
+	NRF24_WriteReg(NRF24_REG_RX_PW_P0, 32);
+	NRF24_WriteReg(NRF24_REG_SETUP_AW, NRF24_SETUP_AW_5bytes);
 	NRF24_WriteReg(NRF24_REG_SETUP_RETR, NRF24_SETUP_RETR_ARD_1500uS | NRF24_SETUP_RETR_ARC_10);
 	NRF24_WriteReg(NRF24_REG_FEATURE, 0);
 	NRF24_WriteReg(NRF24_REG_DYNPD, 0);
 	NRF24_ClearStatus();
-	NRF24_WriteReg(NRF24_REG_RF_CH, 25);
-	NRF24_WriteReg(NRF24_REG_RF_SETUP, NRF24_DataRate_1M | NRF24_OutputPower_0dBm); //TX_PWR:0dBm, Datarate:1Mbps
+	NRF24_WriteReg(NRF24_REG_RF_CH, 76);
+	NRF24_WriteReg(NRF24_REG_RF_SETUP, NRF24_DataRate_2M | NRF24_OutputPower_0dBm); //TX_PWR:0dBm, Datarate:1Mbps
 }
 
 void NRF24_TX_mode(void){
 	NRF24_Set_tx_addr(rx_txAddr);
-	NRF24_WriteReg(NRF24_REG_CONFIG, 1 << NRF24_PWR_UP | 0 << NRF24_PRIM_RX | 1 << NRF24_EN_CRC);
+	NRF24_WriteReg(NRF24_REG_CONFIG, 1 << NRF24_PWR_UP | 0 << NRF24_PRIM_RX | 1 << NRF24_EN_CRC | 1 << NRF24_MASK_MAX_RT | 1 << NRF24_MASK_RX_DR);
 	NRF24_FLUSH_TX();
 	NRF24_FLUSH_RX();
 }
@@ -42,8 +43,9 @@ void NRF24_RX_mode(void){
 }
 void NRF24_SendTX(uint8_t *data){
 	NRF24_WritePayload(data, 32);
+	delay_uS(5);
 	NRF24_CE_HIGH;
-	delay_uS(15);
+	delay_uS(150);
 	NRF24_CE_LOW;
 }
 void NRF24_Init(void){
@@ -174,9 +176,7 @@ void NRF24_SetRF(NRF24_DataRate_t dr, NRF24_OutputPower_t pow){
 
 //address
 void NRF24_Set_rx_addr(uint8_t *addr){
-    NRF24_CE_HIGH;
     NRF24_WriteRegMultiple(NRF24_REG_RX_ADDR_P0,addr,5);
-    NRF24_CE_LOW;
 }
 
 void NRF24_Set_tx_addr(uint8_t *addr){
@@ -233,9 +233,9 @@ void NRF24_ReadAllRegisters(){
 NRF24_STATUS_REGISTER NRF24_ReadStatus(){
 	NRF24_STATUS_REGISTER reg;
 	NRF24_CSN_LOW;
-  reg.all = NRF24_ReadReg(NRF24_REG_STATUS);
+	reg.all = NRF24_ReadReg(NRF24_REG_STATUS);
 	NRF24_CSN_HIGH;
-  return reg; 
+	return reg; 
 }
 NRF24_CONFIG_REGISTER NRF24_ReadConfig(){
 	NRF24_CONFIG_REGISTER reg;

@@ -28,7 +28,6 @@
 #define NRF24_PLL_LOCK        4
 #define NRF24_RF_DR_LOW       5
 #define NRF24_RF_DR_HIGH      3
-#define NRF24_RF_DR           3
 #define NRF24_RF_PWR          1 //2 bits 
 
 //Enable autoacknowledge

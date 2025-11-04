@@ -1,5 +1,7 @@
 #include "spi.h"
 
+volatile uint8_t nrf_irq_flag = 0;
+
 void SPI1_Init(void){
 	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN; //SPI clocking
 	
@@ -20,6 +22,7 @@ void SPI1_Init(void){
 
 void SPI1_NRF24_GPIO_Init(void){
 	RCC->AHBENR |= RCC_AHBENR_GPIOAEN | RCC_AHBENR_GPIOBEN;
+	RCC->APB2ENR |= RCC_APB2ENR_SYSCFGEN; 
 	GPIOA->AFR[0] = 0;
 	
 	//PA4 - NSS(CS), general purpose output push-pull
@@ -65,4 +68,26 @@ uint8_t SPI_transfer_data(uint8_t dt) {
   *(__IO uint8_t*)&SPI1->DR = dt;
   while (!(SPI1->SR & SPI_SR_RXNE));
   return (*(__IO uint8_t*)&SPI1->DR);
+}
+
+void nrf_irq_init(void)
+{
+	SYSCFG->EXTICR[0] &= ~SYSCFG_EXTICR1_EXTI0;
+	SYSCFG->EXTICR[0] |= SYSCFG_EXTICR1_EXTI0_PA;
+	EXTI->RTSR &= ~EXTI_RTSR_TR0; 
+	EXTI->FTSR |= EXTI_FTSR_TR0; 
+	EXTI->IMR |= EXTI_IMR_MR0;
+	EXTI->PR = EXTI_PR_PR0;
+
+	NVIC_SetPriority(EXTI0_1_IRQn, 0);
+	NVIC_EnableIRQ(EXTI0_1_IRQn);
+}
+
+void EXTI0_1_IRQHandler(void)
+{
+	if (EXTI->PR & EXTI_PR_PR0)
+	{
+		EXTI->PR = EXTI_PR_PR0;
+		nrf_irq_flag = 1;
+	}
 }

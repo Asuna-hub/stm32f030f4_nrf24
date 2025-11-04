@@ -3,95 +3,41 @@
 #include <stdio.h>
 
 NRF24_STATUS_REGISTER status_reg;
+uint8_t str[32] = "Hello loxi by nRF24\n";
+uint8_t data[32] = {0};
+uint8_t result[32];
 
-/* My address */
-uint8_t MyAddress[] = {
-	0xE7,
-	0xE7,
-	0xE7,
-	0xE7,
-	0xE7
-};
-/* Receiver address */
-uint8_t TxAddress[] = {
-	0x7E,
-	0x7E,
-	0x7E,
-	0x7E,
-	0x7E
-};
-void Module1_Transmitter(void) {
-    NRF24_Init();
-    
-    NRF24_Set_tx_addr(MyAddress);
-    NRF24_Set_my_addr(TxAddress); 
-    
-    uint8_t counter = 0;
-    uint8_t tx_data[32] = {0};
-    
-    while(1) {
-        for(int i = 0; i < 32; i++) {
-            tx_data[i] = counter + i;
-        }
-        
-        // ??????????
-        printf("TX: Sending packet %d\r\n", counter);
-        NRF24_writeTX(tx_data);
 
-        uint8_t status = NRF24_ReadReg(NRF24_REG_STATUS);
-        printf("Status: 0x%02X\r\n", status);
-        
-        if(status & (1 << 5)) {
-            printf("TX: Success!\r\n");
-        }
-        if(status & (1 << 4)) { 
-            printf("TX: Max retries reached!\r\n");
-        }
-        
-        NRF24_ClearStatus();
-        counter++;
-        delay_uS(1000);
-    }
+void TX(void){
+	NRF24_TX_mode();
+	NRF24_CONFIG_REGISTER conf = NRF24_ReadConfig();
+	delay_s(5);
+	NRF24_SendTX(str);
+	//delay_s(10);
+	//NRF24_STATUS_REGISTER stat = NRF24_ReadStatus();
+	while(!(nrf_irq_flag));
+	NRF24_STATUS_REGISTER stat = NRF24_ReadStatus();
 }
-
-void Module2_Receiver(void) {
-    NRF24_Init();
-    
-    NRF24_Set_my_addr(MyAddress);
-    NRF24_Set_tx_addr(TxAddress);
-    
-    NRF24_RX_Config();
-    
-    uint8_t rx_data[32] = {0};
-    uint8_t packet_count = 0;
-    
-    printf("RX: Ready to receive...\r\n");
-    
-    while(1) {
-        if(!(NRF24_ReadReg(NRF24_REG_FIFO_STATUS) & 0x01)) {
-            uint8_t status = NRF24_ReadRX(rx_data, 32);
-            
-            printf("RX: Received packet %d! Status: 0x%02X\r\n", 
-                   packet_count, status);
-            
-            printf("Data: ");
-            for(int i = 0; i < 5; i++) {
-                printf("%02X ", rx_data[i]);
-            }
-            printf("\r\n");
-            
-            packet_count++;
-            
-            NRF24_ClearStatus();
-        }
-        
-        delay_uS(100);
-    }
+void RX(void){
+	NRF24_RX_mode();
+	NRF24_CONFIG_REGISTER conf = NRF24_ReadConfig();
+	uint8_t stat_rx = NRF24_ReadReg(NRF24_REG_STATUS);
+	while(!(nrf_irq_flag));
+	stat_rx = NRF24_ReadReg(NRF24_REG_STATUS);
+	//stat_rx = NRF24_ReadRX(result, 32);
 }
-
 int main(void){
 	RCC_Init();
 	SysTick_Init();
+	nrf_irq_init();
+	TIM3_Init();
 	NRF24l01_init();
+	NRF24_EN_AA_REGISTER en_aaa = NRF24_Read_EN_AA();
+	uint8_t p0 = NRF24_ReadReg(NRF24_REG_RX_ADDR_P0);
+	uint8_t tx = NRF24_ReadReg(NRF24_REG_TX_ADDR);
+	NRF24_FIFO_STATUS_REGISTER fifo = NRF24_Read_FIFO_STATUS();
+	NRF24_OBSERVE_TX_REGISTER obs = NRF24_Read_OBSERVE_TX();
+	//TX();
+	RX();
 	while(1);
 }

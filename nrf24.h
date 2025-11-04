@@ -3,6 +3,9 @@
 
 #include "main.h"
 
+/* My address */ 
+
+
 //CSN
 #define NRF24_CSN_HIGH GPIOA->BSRR = GPIO_BSRR_BS_4
 #define NRF24_CSN_LOW  GPIOA->BSRR = GPIO_BSRR_BR_4
@@ -15,9 +18,9 @@
 //Configuration bits
 #define NRF24_MASK_RX_DR     6
 #define NRF24_MASK_TX_DS     5
-#define NRF24_MASK_MAX_RT	 4
+#define NRF24_MASK_MAX_RT	   4
 #define NRF24_EN_CRC         3
-#define NRF24_CRCO			 2
+#define NRF24_CRCO			     2
 #define NRF24_PWR_UP         1
 #define NRF24_PRIM_RX        0
 
@@ -29,7 +32,7 @@
 #define NRF24_RF_PWR          1 //2 bits 
 
 //Enable autoacknowledge
-#define NRF24_ENAA_PO       0
+#define NRF24_ENAA_P0       0
 #define NRF24_ENAA_P1       1
 #define NRF24_ENAA_P2       2
 #define NRF24_ENAA_P3       3
@@ -37,18 +40,12 @@
 #define NRF24_ENAA_P5       5
 
 //EX_RXADDR bits
-#define NRF24_ERX_P5_ON		(1 << 5)
-#define NRF24_ERX_P5_OFF    (0 << 5)
-#define NRF24_ERX_P4_ON		(1 << 4)
-#define NRF24_ERX_P4_OFF    (0 << 4)
-#define NRF24_ERX_P3_ON		(1 << 3)
-#define NRF24_ERX_P3_OFF    (0 << 3)
-#define NRF24_ERX_P2_ON		(1 << 2)
-#define NRF24_ERX_P2_OFF    (0 << 2)
-#define NRF24_ERX_P1_ON		(1 << 1)
-#define NRF24_ERX_P1_OFF    (0 << 1)
-#define NRF24_ERX_P0_ON		(1 << 0)
-#define NRF24_ERX_P0_OFF    (0 << 0)
+#define NRF24_ERX_P5		  5
+#define NRF24_ERX_P4		  4
+#define NRF24_ERX_P3		  3
+#define NRF24_ERX_P2      2
+#define NRF24_ERX_P1		  1
+#define NRF24_ERX_P0		  0
 
 //SETUP_AW bits
 #define NRF24_SETUP_AW_3bytes (1 << 0)
@@ -77,22 +74,22 @@
 #define NRF24_SETUP_RETR_ARD_4000uS  (0xF << NRF24_ARD_POS)
 
 // ARC (Auto Retransmit Count) - биты [3:0]
-#define NRF24_SETUP_RETR_ARC_0		(0x0)
-#define NRF24_SETUP_RETR_ARC_1		(0x1)
-#define NRF24_SETUP_RETR_ARC_2		(0x2)
-#define NRF24_SETUP_RETR_ARC_3		(0x3)
-#define NRF24_SETUP_RETR_ARC_4		(0x4)
-#define NRF24_SETUP_RETR_ARC_5		(0x5)
-#define NRF24_SETUP_RETR_ARC_6		(0x6)
-#define NRF24_SETUP_RETR_ARC_7		(0x7)
-#define NRF24_SETUP_RETR_ARC_8		(0x8)
-#define NRF24_SETUP_RETR_ARC_9		(0x9)
-#define NRF24_SETUP_RETR_ARC_10		(0xA)
-#define NRF24_SETUP_RETR_ARC_11		(0xB)
-#define NRF24_SETUP_RETR_ARC_12		(0xC)
-#define NRF24_SETUP_RETR_ARC_13		(0xD)
-#define NRF24_SETUP_RETR_ARC_14		(0xE)
-#define NRF24_SETUP_RETR_ARC_15		(0xF)
+#define NRF24_SETUP_RETR_ARC_0		0x0
+#define NRF24_SETUP_RETR_ARC_1		0x1
+#define NRF24_SETUP_RETR_ARC_2		0x2
+#define NRF24_SETUP_RETR_ARC_3		0x3
+#define NRF24_SETUP_RETR_ARC_4		0x4
+#define NRF24_SETUP_RETR_ARC_5		0x5
+#define NRF24_SETUP_RETR_ARC_6		0x6
+#define NRF24_SETUP_RETR_ARC_7		0x7
+#define NRF24_SETUP_RETR_ARC_8		0x8
+#define NRF24_SETUP_RETR_ARC_9		0x9
+#define NRF24_SETUP_RETR_ARC_10		0xA
+#define NRF24_SETUP_RETR_ARC_11		0xB
+#define NRF24_SETUP_RETR_ARC_12		0xC
+#define NRF24_SETUP_RETR_ARC_13		0xD
+#define NRF24_SETUP_RETR_ARC_14		0xE
+#define NRF24_SETUP_RETR_ARC_15		0xF
 
 //DPL
 #define NRF24_DPL_P5  5
@@ -102,6 +99,11 @@
 #define NRF24_DPL_P1  1
 #define NRF24_DPL_P0  0
 
+//feature
+#define NRF24_EN_DPL     2
+#define NRF24_EN_ACK_PAY 1
+#define NRF24_EN_DYN_ACK 0
+
 typedef enum {
   Bit_RESET = 0,
   Bit_SET = 1
@@ -109,8 +111,8 @@ typedef enum {
 //Data rate
 //--------------------------------------------------------------
 typedef enum{
-    NRF24_DataRate_1M   = 0x00, // 00: 1 Mbps
-    NRF24_DataRate_2M   = 0x08, // 08: 2 Mbps (бит 3 = 1)  
+    NRF24_DataRate_1M = 0x00, // 00: 1 Mbps
+    NRF24_DataRate_2M = 0x08, // 08: 2 Mbps (бит 3 = 1)  
 	NRF24_DataRate_250k = 0x20  // 20: 250 Kbps (бит 5 = 1)
 } NRF24_DataRate_t;
 //--------------------------------------------------------------
@@ -181,12 +183,12 @@ typedef  union {
 } NRF24_CONFIG_REGISTER;
 
 struct NRF24_REG_EN_AA_BITS{
-	uint8_t ENAA_P0 : 1;
-	uint8_t ENAA_P1 : 1;
-	uint8_t ENAA_P2 : 1;
-	uint8_t ENAA_P3 : 1;
-	uint8_t ENAA_P4 : 1;
-	uint8_t ENAA_P5 : 1;
+	uint8_t ENAA_P0  : 1;
+	uint8_t ENAA_P1  : 1;
+	uint8_t ENAA_P2  : 1;
+	uint8_t ENAA_P3  : 1;
+	uint8_t ENAA_P4  : 1;
+	uint8_t ENAA_P5  : 1;
 	uint8_t reserved : 2;
 };
 typedef  union {
@@ -195,12 +197,12 @@ typedef  union {
 } NRF24_EN_AA_REGISTER;
 //--------------------------------------------------------------
 struct NRF24_REG_EN_RXADDR_BITS{
-	uint8_t ERX_P0 : 1;
-	uint8_t ERX_P1 : 1;
-	uint8_t ERX_P2 : 1;
-	uint8_t ERX_P3 : 1;
-	uint8_t ERX_P4 : 1;
-	uint8_t ERX_P5 : 1;
+	uint8_t ERX_P0   : 1;
+	uint8_t ERX_P1   : 1;
+	uint8_t ERX_P2   : 1;
+	uint8_t ERX_P3   : 1;
+	uint8_t ERX_P4   : 1;
+	uint8_t ERX_P5   : 1;
 	uint8_t reserved : 2;
 };
 typedef  union {
@@ -239,12 +241,12 @@ typedef  union {
 //--------------------------------------------------------------
 
 struct NRF24_REG_RF_SETUP_BITS{
-	uint8_t Obsolete : 1;
-	uint8_t RF_PWR : 2;
+	uint8_t Obsolete   : 1;
+	uint8_t RF_PWR     : 2;
 	uint8_t RF_DR_HIGH : 1;
-	uint8_t PLL_LOCK : 1;
-	uint8_t RF_DR_LOW : 1;
-	uint8_t reserved : 1;
+	uint8_t PLL_LOCK   : 1;
+	uint8_t RF_DR_LOW  : 1;
+	uint8_t reserved   : 1;
 	uint8_t COUNT_WAVE : 1;
 };
 typedef  union {
@@ -269,7 +271,7 @@ typedef  union {
 
 //--------------------------------------------------------------
 struct NRF24_OBSERVE_TX_REG_BITS{
-	uint8_t ARC_CNT : 4;
+	uint8_t ARC_CNT  : 4;
 	uint8_t PLOS_CNT : 4;
 };
 typedef  union {
@@ -305,12 +307,12 @@ typedef  union {
 //--------------------------------------------------------------
 
 struct NRF24_DYNPD_REG_BITS{
-	uint8_t DPL_P0 : 1;
-	uint8_t DPL_P1 : 1;
-	uint8_t DPL_P2 : 1;
-	uint8_t DPL_P3 : 1;
-	uint8_t DPL_P4 : 1;
-	uint8_t DPL_P5 : 1;
+	uint8_t DPL_P0   : 1;
+	uint8_t DPL_P1   : 1;
+	uint8_t DPL_P2   : 1;
+	uint8_t DPL_P3   : 1;
+	uint8_t DPL_P4   : 1;
+	uint8_t DPL_P5   : 1;
 	uint8_t reserved : 1;
 };
 typedef  union {
@@ -323,8 +325,8 @@ typedef  union {
 struct NRF24_FEATURE_REG_BITS{
 	uint8_t EN_DYN_ACK : 1;
 	uint8_t EN_ACK_PAY : 1;
-	uint8_t EN_DPL : 1;
-	uint8_t reserved : 5;
+	uint8_t EN_DPL     : 1;
+	uint8_t reserved   : 5;
 };
 typedef  union {
     struct NRF24_FEATURE_REG_BITS bit;
@@ -352,6 +354,9 @@ enum NRF24_Commands{
 //                                  Functions
 /*==============================================================================*/
 void NRF24l01_init(void);
+void NRF24_RX_mode(void);
+void NRF24_TX_mode(void);
+void NRF24_SendTX(uint8_t *data);
 uint8_t NRF24_ReadReg(uint8_t rg); // read single register
 void NRF24_WriteReg(uint8_t rg, uint8_t dt); // write single register
 void NRF24_WriteBit(uint8_t rg, uint8_t bit, BitAction value); // write bit to nrf24 register
@@ -363,9 +368,9 @@ void NRF24_FLUSH_TX(void);
 void NRF24_RX_Config(void);
 void NRF24_writeTX(uint8_t *data);
 uint8_t NRF24_ReadReg(uint8_t rg);
-uint8_t NRF24_ReadRX(uint8_t *result, uint8_t result_size);
+uint8_t NRF24_ReadRX(uint8_t *data, uint8_t data_size);
 void NRF24_SetRF(NRF24_DataRate_t dr, NRF24_OutputPower_t pow);
-void NRF24_Set_my_addr(uint8_t *addr);
+void NRF24_Set_rx_addr(uint8_t *addr);
 void NRF24_Set_tx_addr(uint8_t *addr);
 void NRF24_SelectChannel(uint8_t ch);
 void NRF24_Init(void);

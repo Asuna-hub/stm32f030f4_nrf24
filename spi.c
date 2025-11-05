@@ -6,7 +6,7 @@ void SPI1_Init(void){
 	RCC->APB2ENR |= RCC_APB2ENR_SPI1EN; //SPI clocking
 	
 	SPI1->CR1 = 0; //reset all CR1 registers
-	SPI1->CR1 |= SPI_CR1_BR_1 | SPI_CR1_BR_0; // 48000000 / 8 = 6 MHz
+	SPI1->CR1 |= SPI_CR1_BR_1; // 48000000 / 8 = 6 MHz
 	SPI1->CR1 &= ~(SPI_CR1_BIDIMODE | SPI_CR1_RXONLY | SPI_CR1_BIDIOE); //2-line unidirectional data mode, full duplex
 	SPI1->CR1 &= ~(SPI_CR1_CPOL | SPI_CR1_CPHA); //[0,0] mode (CPOL - 0, CPHA - 0)
 	SPI1->CR1 &= ~SPI_CR1_LSBFIRST; //MSB first

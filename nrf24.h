@@ -18,9 +18,9 @@
 //Configuration bits
 #define NRF24_MASK_RX_DR     6
 #define NRF24_MASK_TX_DS     5
-#define NRF24_MASK_MAX_RT	   4
+#define NRF24_MASK_MAX_RT	 4
 #define NRF24_EN_CRC         3
-#define NRF24_CRCO			     2
+#define NRF24_CRCO			 2
 #define NRF24_PWR_UP         1
 #define NRF24_PRIM_RX        0
 
@@ -39,12 +39,12 @@
 #define NRF24_ENAA_P5       5
 
 //EX_RXADDR bits
-#define NRF24_ERX_P5		  5
-#define NRF24_ERX_P4		  4
-#define NRF24_ERX_P3		  3
+#define NRF24_ERX_P5	  5
+#define NRF24_ERX_P4	  4
+#define NRF24_ERX_P3	  3
 #define NRF24_ERX_P2      2
-#define NRF24_ERX_P1		  1
-#define NRF24_ERX_P0		  0
+#define NRF24_ERX_P1	  1
+#define NRF24_ERX_P0	  0
 
 //SETUP_AW bits
 #define NRF24_SETUP_AW_3bytes (1 << 0)
@@ -72,7 +72,7 @@
 #define NRF24_SETUP_RETR_ARD_3750uS  (0xE << NRF24_ARD_POS)
 #define NRF24_SETUP_RETR_ARD_4000uS  (0xF << NRF24_ARD_POS)
 
-// ARC (Auto Retransmit Count) - биты [3:0]
+// ARC (Auto Retransmit Count) 
 #define NRF24_SETUP_RETR_ARC_0		0x0
 #define NRF24_SETUP_RETR_ARC_1		0x1
 #define NRF24_SETUP_RETR_ARC_2		0x2
@@ -99,28 +99,29 @@
 #define NRF24_DPL_P0  0
 
 //feature
-#define NRF24_EN_DPL     2
-#define NRF24_EN_ACK_PAY 1
-#define NRF24_EN_DYN_ACK 0
+#define NRF24_EN_DPL      2
+#define NRF24_EN_ACK_PAY  1
+#define NRF24_EN_DYN_ACK  0
 
 typedef enum {
   Bit_RESET = 0,
   Bit_SET = 1
 } BitAction;
+
 //Data rate
 //--------------------------------------------------------------
 typedef enum{
-    NRF24_DataRate_1M = 0x00, // 00: 1 Mbps
-    NRF24_DataRate_2M = 0x08, // 08: 2 Mbps (бит 3 = 1)  
+    NRF24_DataRate_1M   = 0x00, // 00: 1 Mbps
+    NRF24_DataRate_2M   = 0x08, // 08: 2 Mbps (бит 3 = 1)  
 	NRF24_DataRate_250k = 0x20  // 20: 250 Kbps (бит 5 = 1)
 } NRF24_DataRate_t;
 //--------------------------------------------------------------
 
 typedef enum {
-  NRF24_OutputPower_M18dBm = 0x00,  // 00: -18dBm
-  NRF24_OutputPower_M12dBm = 0x02,  // 02: -12dBm (бит 1 = 1)
-  NRF24_OutputPower_M6dBm  = 0x04,  // 04: -6dBm  (бит 2 = 1)
-  NRF24_OutputPower_0dBm   = 0x06   // 06: 0dBm   (биты 1+2 = 1)
+	NRF24_OutputPower_M18dBm = 0x00,  // 00: -18dBm
+	NRF24_OutputPower_M12dBm = 0x02,  // 02: -12dBm (бит 1 = 1)
+	NRF24_OutputPower_M6dBm  = 0x04,  // 04: -6dBm  (бит 2 = 1)
+	NRF24_OutputPower_0dBm   = 0x06   // 06: 0dBm   (биты 1+2 = 1)
 } NRF24_OutputPower_t;
 
 
@@ -211,7 +212,7 @@ typedef  union {
 
 //--------------------------------------------------------------
 struct NRF24_REG_SETUP_AW_BITS{
-	uint8_t AW : 2;
+	uint8_t AW       : 2;
 	uint8_t reserved : 6;
 };
 typedef  union {
@@ -230,7 +231,7 @@ typedef  union {
 } NRF24_SETUP_RETR_REGISTER;
 //--------------------------------------------------------------
 struct NRF24_REG_RF_CH_BITS{
-	uint8_t RF_CH : 7;
+	uint8_t RF_CH    : 7;
 	uint8_t reserved : 1;
 };
 typedef  union {
@@ -258,8 +259,8 @@ struct NRF24_STATUS_REG_BITS {
   uint8_t TX_FULL   : 1;  // Бит 0: Data Ready RX FIFO
   uint8_t RX_P_NO   : 3;  // Бит 1: Data Sent TX FIFO  
   uint8_t MAX_RT  	: 1;  // Бит 2: Max Retransmits
-  uint8_t TX_DS			: 1;  // Бит 3: Reserved
-  uint8_t RX_DR 		: 1;  // Биты 4-6: Pipe Number for RX payload
+  uint8_t TX_DS		: 1;  // Бит 3: Reserved
+  uint8_t RX_DR 	: 1;  // Биты 4-6: Pipe Number for RX payload
   uint8_t reserved 	: 1;  // Бит 7: TX FIFO Full
 };
 
@@ -280,7 +281,7 @@ typedef  union {
 
 //--------------------------------------------------------------
 struct NRF24_RPD_REG_BITS{
-	uint8_t RPD : 1;
+	uint8_t RPD      : 1;
 	uint8_t reserved : 7;
 };
 typedef  union {
@@ -293,11 +294,11 @@ typedef  union {
 struct NRF24_FIFO_STATUS_REG_BITS{
 	uint8_t RX_EMPTY 	: 1;
 	uint8_t RX_FULL 	: 1;
-	uint8_t reserved1 : 2;
+	uint8_t reserved1   : 2;
 	uint8_t TX_EMPTY 	: 1;
 	uint8_t TX_FULL 	: 1;
 	uint8_t TX_REUSE 	: 1;
-	uint8_t reserved2 : 1;
+	uint8_t reserved2   : 1;
 };
 typedef  union {
     struct NRF24_FIFO_STATUS_REG_BITS bit;
@@ -366,16 +367,11 @@ void NRF24_FLUSH_RX(void);
 void NRF24_FLUSH_TX(void);
 void NRF24_RX_Config(void);
 void NRF24_writeTX(uint8_t *data);
-uint8_t NRF24_ReadReg(uint8_t rg);
 uint8_t NRF24_ReadRX(uint8_t *data, uint8_t data_size);
-void NRF24_SetRF(NRF24_DataRate_t dr, NRF24_OutputPower_t pow);
-void NRF24_Set_rx_addr(uint8_t *addr);
+void NRF24_Set_rx_addr(uint8_t *addr, uint8_t num_pipe);
 void NRF24_Set_tx_addr(uint8_t *addr);
-void NRF24_SelectChannel(uint8_t ch);
-void NRF24_Init(void);
 
 //READ
-void NRF24_ReadAllRegisters();
 NRF24_STATUS_REGISTER NRF24_ReadStatus();
 NRF24_CONFIG_REGISTER NRF24_ReadConfig();
 NRF24_EN_AA_REGISTER NRF24_Read_EN_AA();

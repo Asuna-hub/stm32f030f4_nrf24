@@ -9,8 +9,8 @@ void SysTick_Init(void){
 }
 
 void SysTick_Handler(void){
-  if (SysTick_CNT > 0)
-    SysTick_CNT--;
+	if (SysTick_CNT > 0)
+		SysTick_CNT--;
 }
 
 void delay_uS(uint32_t uS){

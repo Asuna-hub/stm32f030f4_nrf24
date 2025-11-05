@@ -6,7 +6,6 @@ void RCC_Init(void)
     while((RCC->CR & RCC_CR_HSIRDY) == 0);
     RCC->CR &= ~RCC_CR_PLLON;
     while((RCC->CR & RCC_CR_PLLRDY) == 1);
-    // PLL = (HSI / 2) * 12 = (8 / 2) * 12 = 48
     RCC->CFGR &= ~(RCC_CFGR_PLLMUL | RCC_CFGR_PLLSRC | RCC_CFGR_PLLXTPRE);
     RCC->CFGR |= RCC_CFGR_PLLSRC_HSI_DIV2;
     RCC->CFGR |= RCC_CFGR_PLLMUL12;

@@ -18,7 +18,7 @@ This project provides a complete driver for NRF24L01 wireless transceiver module
 - **IDE**: Keil uVision 5
 - **Compiler**: ARM Compiler v6
 - **Debugger**: ST-Link V2
-- **Communication**: SPI 1
+- **Communication**: SPI
 - **Library**: CMSIS
 
 ### ✨ Features
@@ -50,7 +50,7 @@ cd stm32f030f4_nrf24
 - **Среда разработки**: Keil uVision 5
 - **Компилятор**: ARM Compiler v6
 - **Отладчик**: ST-Link V2
-- **Связь**: SPI 1
+- **Связь**: SPI
 - **Библиотека**: CMSIS
 
 ### ✨ Возможности

@@ -58,6 +58,10 @@ int main(void){
 	NRF24l01_init();
 	en_aa = NRF24_Read_EN_AA();
 	p0 = NRF24_ReadReg(NRF24_REG_RX_ADDR_P0);
+	NRF24_WriteReg(NRF24_REG_CONFIG, 0 << NRF24_PWR_UP | 1 << NRF24_PRIM_RX | 1 << NRF24_EN_CRC);
+	conf = NRF24_ReadConfig();
+	NRF24_WriteBit(NRF24_REG_CONFIG, NRF24_PWR_UP, Bit_SET);
+	conf = NRF24_ReadConfig();
 	tx = NRF24_ReadReg(NRF24_REG_TX_ADDR);
 	fifo = NRF24_Read_FIFO_STATUS();
 	obs = NRF24_Read_OBSERVE_TX();

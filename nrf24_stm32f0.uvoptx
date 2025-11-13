@@ -161,25 +161,41 @@
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\main.c</Filename>
+          <Filename>D:\learning\stm32_keil\nrf24\nrf24_stm32f0\main.c</Filename>
           <ExecCommand></ExecCommand>
           <Expression>\\nrf24_stm32f0\main.c\46</Expression>
         </Bp>
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>70</LineNumber>
+          <LineNumber>63</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>134220620</Address>
+          <Address>134220582</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
           <SizeOfObject>0</SizeOfObject>
           <BreakByAccess>0</BreakByAccess>
           <BreakIfRCount>1</BreakIfRCount>
-          <Filename>.\main.c</Filename>
+          <Filename>D:\learning\stm32_keil\nrf24\nrf24_stm32f0\main.c</Filename>
           <ExecCommand></ExecCommand>
-          <Expression>\\nrf24_stm32f0\main.c\70</Expression>
+          <Expression>\\nrf24_stm32f0\main.c\63</Expression>
+        </Bp>
+        <Bp>
+          <Number>2</Number>
+          <Type>0</Type>
+          <LineNumber>65</LineNumber>
+          <EnabledFlag>1</EnabledFlag>
+          <Address>134220604</Address>
+          <ByteObject>0</ByteObject>
+          <HtxType>0</HtxType>
+          <ManyObjects>0</ManyObjects>
+          <SizeOfObject>0</SizeOfObject>
+          <BreakByAccess>0</BreakByAccess>
+          <BreakIfRCount>1</BreakIfRCount>
+          <Filename>D:\learning\stm32_keil\nrf24\nrf24_stm32f0\main.c</Filename>
+          <ExecCommand></ExecCommand>
+          <Expression>\\nrf24_stm32f0\main.c\65</Expression>
         </Bp>
       </Breakpoint>
       <WatchWindow1>
@@ -465,7 +481,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\main.c</PathWithFileName>
+      <PathWithFileName>.\User\Src\main.c</PathWithFileName>
       <FilenameWithoutPath>main.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -477,8 +493,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\rcc.c</PathWithFileName>
-      <FilenameWithoutPath>rcc.c</FilenameWithoutPath>
+      <PathWithFileName>.\User\Src\nrf24.c</PathWithFileName>
+      <FilenameWithoutPath>nrf24.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -489,8 +505,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\systick.c</PathWithFileName>
-      <FilenameWithoutPath>systick.c</FilenameWithoutPath>
+      <PathWithFileName>.\User\Src\rcc.c</PathWithFileName>
+      <FilenameWithoutPath>rcc.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -501,7 +517,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\spi.c</PathWithFileName>
+      <PathWithFileName>.\User\Src\spi.c</PathWithFileName>
       <FilenameWithoutPath>spi.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -513,8 +529,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\nrf24.c</PathWithFileName>
-      <FilenameWithoutPath>nrf24.c</FilenameWithoutPath>
+      <PathWithFileName>.\User\Src\systick.c</PathWithFileName>
+      <FilenameWithoutPath>systick.c</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -533,7 +549,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\main.h</PathWithFileName>
+      <PathWithFileName>.\User\Inc\main.h</PathWithFileName>
       <FilenameWithoutPath>main.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -545,8 +561,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\rcc.h</PathWithFileName>
-      <FilenameWithoutPath>rcc.h</FilenameWithoutPath>
+      <PathWithFileName>.\User\Inc\nrf24.h</PathWithFileName>
+      <FilenameWithoutPath>nrf24.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -557,8 +573,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\systick.h</PathWithFileName>
-      <FilenameWithoutPath>systick.h</FilenameWithoutPath>
+      <PathWithFileName>.\User\Inc\rcc.h</PathWithFileName>
+      <FilenameWithoutPath>rcc.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>
@@ -569,7 +585,7 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\spi.h</PathWithFileName>
+      <PathWithFileName>.\User\Inc\spi.h</PathWithFileName>
       <FilenameWithoutPath>spi.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
@@ -581,8 +597,8 @@
       <tvExp>0</tvExp>
       <tvExpOptDlg>0</tvExpOptDlg>
       <bDave2>0</bDave2>
-      <PathWithFileName>.\nrf24.h</PathWithFileName>
-      <FilenameWithoutPath>nrf24.h</FilenameWithoutPath>
+      <PathWithFileName>.\User\Inc\systick.h</PathWithFileName>
+      <FilenameWithoutPath>systick.h</FilenameWithoutPath>
       <RteFlg>0</RteFlg>
       <bShared>0</bShared>
     </File>

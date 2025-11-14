@@ -103,6 +103,7 @@
 #define NRF24_EN_ACK_PAY  1
 #define NRF24_EN_DYN_ACK  0
 
+
 typedef enum {
   Bit_RESET = 0,
   Bit_SET = 1
@@ -117,23 +118,23 @@ typedef enum{
 } NRF24_DataRate_t;
 //--------------------------------------------------------------
 
+//output power in TX mod
+//--------------------------------------------------------------
 typedef enum {
 	NRF24_OutputPower_M18dBm = 0x00,  // 00: -18dBm
 	NRF24_OutputPower_M12dBm = 0x02,  // 02: -12dBm (бит 1 = 1)
 	NRF24_OutputPower_M6dBm  = 0x04,  // 04: -6dBm  (бит 2 = 1)
 	NRF24_OutputPower_0dBm   = 0x06   // 06: 0dBm   (биты 1+2 = 1)
 } NRF24_OutputPower_t;
-
+//---------------------------------------------------------------
 
 //                               REGISTERS
 /*===============================================================================*/
 
-//Config registers
-//--------------------------------------------------------------
 enum NRF24_ConfigReg{
 	NRF24_REG_CONFIG      = 0x00, // Nado
 	NRF24_REG_EN_AA       = 0x01, // Auto Acknowledgment for pipe
-	NRF24_REG_EN_RXADDR   = 0x02, // Enable data pipe 0
+	NRF24_REG_EN_RXADDR   = 0x02, // data pipes
 	NRF24_REG_SETUP_AW    = 0x03, // Setting the address width
 	NRF24_REG_SETUP_RETR  = 0x04, // Setting up retransmission
 	NRF24_REG_RF_CH       = 0x05, // RF channels
@@ -195,6 +196,7 @@ typedef  union {
     struct NRF24_REG_EN_AA_BITS bit;
     uint8_t all;
 } NRF24_EN_AA_REGISTER;
+
 //--------------------------------------------------------------
 struct NRF24_REG_EN_RXADDR_BITS{
 	uint8_t ERX_P0   : 1;
@@ -219,8 +221,8 @@ typedef  union {
     struct NRF24_REG_SETUP_AW_BITS bit;
     uint8_t all;
 } NRF24_SETUP_AW_REGISTER;
-//--------------------------------------------------------------
 
+//--------------------------------------------------------------
 struct NRF24_SETUP_RETR_REG_BITS {
     uint8_t ARC  : 4; //0..3
     uint8_t ARDa : 4; //4..7
@@ -229,6 +231,7 @@ typedef  union {
     struct NRF24_SETUP_RETR_REG_BITS bit;
     uint8_t all;
 } NRF24_SETUP_RETR_REGISTER;
+
 //--------------------------------------------------------------
 struct NRF24_REG_RF_CH_BITS{
 	uint8_t RF_CH    : 7;
@@ -238,8 +241,8 @@ typedef  union {
     struct NRF24_REG_RF_CH_BITS bit;
     uint8_t all;
 } NRF24_RF_CH_REGISTER;
-//--------------------------------------------------------------
 
+//--------------------------------------------------------------
 struct NRF24_REG_RF_SETUP_BITS{
 	uint8_t Obsolete   : 1;
 	uint8_t RF_PWR     : 2;
@@ -290,7 +293,6 @@ typedef  union {
 } NRF24_RPD_REGISTER;
 
 //--------------------------------------------------------------
-
 struct NRF24_FIFO_STATUS_REG_BITS{
 	uint8_t RX_EMPTY 	: 1;
 	uint8_t RX_FULL 	: 1;
@@ -304,8 +306,8 @@ typedef  union {
     struct NRF24_FIFO_STATUS_REG_BITS bit;
     uint8_t all;
 } NRF24_FIFO_STATUS_REGISTER;
-//--------------------------------------------------------------
 
+//--------------------------------------------------------------
 struct NRF24_DYNPD_REG_BITS{
 	uint8_t DPL_P0   : 1;
 	uint8_t DPL_P1   : 1;
@@ -321,7 +323,6 @@ typedef  union {
 } NRF24_DYNPD_REGISTER;
 
 //--------------------------------------------------------------
-
 struct NRF24_FEATURE_REG_BITS{
 	uint8_t EN_DYN_ACK : 1;
 	uint8_t EN_ACK_PAY : 1;
@@ -332,6 +333,7 @@ typedef  union {
     struct NRF24_FEATURE_REG_BITS bit;
     uint8_t all;
 } NRF24_FEATURE_REGISTER;
+
 /*===============================================================================*/
 
 //                                 Commands
@@ -358,6 +360,7 @@ void NRF24_RX_mode(void);
 void NRF24_TX_mode(void);
 void NRF24_SendTX(uint8_t *data);
 uint8_t NRF24_ReadReg(uint8_t rg); // read single register
+uint8_t NRF24_ReadReg_DMA(uint8_t rg);
 void NRF24_WriteReg(uint8_t rg, uint8_t dt); // write single register
 void NRF24_WriteBit(uint8_t rg, uint8_t bit, BitAction value); // write bit to nrf24 register
 void NRF24_WritePayload(uint8_t *data, uint8_t data_size); // Write data to transmission
@@ -371,7 +374,7 @@ uint8_t NRF24_ReadRX(uint8_t *data, uint8_t data_size);
 void NRF24_Set_rx_addr(uint8_t *addr, uint8_t num_pipe);
 void NRF24_Set_tx_addr(uint8_t *addr);
 
-//READ
+//Read functions
 NRF24_STATUS_REGISTER NRF24_ReadStatus();
 NRF24_CONFIG_REGISTER NRF24_ReadConfig();
 NRF24_EN_AA_REGISTER NRF24_Read_EN_AA();

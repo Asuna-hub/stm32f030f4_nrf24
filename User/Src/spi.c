@@ -70,6 +70,14 @@ uint8_t SPI_transfer_data(uint8_t dt) {
   return (*(__IO uint8_t*)&SPI1->DR);
 }
 
+uint8_t SPI_DMA_TransmitReceive(uint8_t tx_data)
+{
+	uint8_t rx_data;
+    SPI_DMA_Transmit(tx_data, 8);
+    SPI_DMA_Receive(rx_data, 8);
+	return rx_data;
+}
+
 void nrf_irq_init(void)
 {
 	SYSCFG->EXTICR[0] &= ~SYSCFG_EXTICR1_EXTI0;

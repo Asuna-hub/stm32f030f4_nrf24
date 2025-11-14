@@ -409,6 +409,11 @@
               <FileType>1</FileType>
               <FilePath>.\User\Src\systick.c</FilePath>
             </File>
+            <File>
+              <FileName>dma.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\User\Src\dma.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -438,6 +443,11 @@
               <FileName>systick.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\User\Inc\systick.h</FilePath>
+            </File>
+            <File>
+              <FileName>dma.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\User\Inc\dma.h</FilePath>
             </File>
           </Files>
         </Group>

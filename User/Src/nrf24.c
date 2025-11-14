@@ -25,6 +25,16 @@ void NRF24l01_init(void){
 	NRF24_WriteReg(NRF24_REG_RF_SETUP, NRF24_DataRate_1M | NRF24_OutputPower_M18dBm); //TX_PWR:0dBm, Datarate:1Mbps
 }
 
+uint8_t NRF24_ReadReg_DMA(uint8_t rg){
+	
+	NRF24_CSN_LOW;
+	SPI_DMA_TransmitReceive(NRF24_CMD_R_REGISTER | rg & 0x1F);
+	uint8_t result = SPI_DMA_TransmitReceive(NRF24_CMD_NOP);
+	NRF24_CSN_HIGH;
+	
+	return result;
+}
+
 void NRF24_TX_mode(void){
 	NRF24_Set_tx_addr(rx_txAddr);
 	NRF24_WriteReg(NRF24_REG_CONFIG, 1 << NRF24_PWR_UP | 0 << NRF24_PRIM_RX | 1 << NRF24_EN_CRC | 1 << NRF24_MASK_MAX_RT);

@@ -5,6 +5,7 @@
 #include "rcc.h"
 #include "systick.h"
 #include "spi.h"
+#include "dma.h"
 #include "nrf24.h"
 
 #endif

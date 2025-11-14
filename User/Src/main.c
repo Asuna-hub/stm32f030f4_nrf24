@@ -24,6 +24,7 @@ NRF24_RF_SETUP_REGISTER rfset;
 void System_inits(void){
 	RCC_Init();
 	SysTick_Init();
+	DMA_SPI_Init();
 	nrf_irq_init();
 	TIM3_Init();
 }
@@ -67,6 +68,7 @@ int main(void){
 	obs = NRF24_Read_OBSERVE_TX();
 	setaw = NRF24_Read_Setup_AW();
 	rfset = NRF24_Read_RF_SETUP();
+	rx_addr_p0 = NRF24_ReadReg_DMA(NRF24_REG_RX_ADDR_P0);
 //	TX();
 	RX();
 	while(1)

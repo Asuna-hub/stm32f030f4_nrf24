@@ -28,15 +28,6 @@ This project provides a complete driver for NRF24L01 wireless transceiver module
 - 🛡 **Error detection** - CRC and automatic retransmission
 - 📡 **Multi-channel** - 125 RF channels support
 
-### 🚀 Quick Start
-
-#### 1. Clone Repository
-```bash
-git clone https://github.com/Asuna-hub/stm32f030f4_nrf24.git
-cd stm32f030f4_nrf24
-```
-</div>
-
 <a name="russian"></a>
 
 ## RU Russian Version
@@ -60,10 +51,3 @@ cd stm32f030f4_nrf24
 - 🛡 **Обнаружение ошибок** - CRC и автоматическая повторная передача  
 - 📡 **Многоканальность** - Поддержка 125 RF каналов
 
-### 🚀 Быстрый старт
-
-#### 1. Клонируйте репозиторий
-```bash
-git clone https://github.com/Asuna-hub/stm32f030f4_nrf24.git
-cd stm32f030f4_nrf24
-```

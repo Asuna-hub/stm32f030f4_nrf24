@@ -3,7 +3,7 @@
 uint8_t str[32] = "Hello STM32 by nRF24\n";
 uint8_t result[32];
 
-uint8_t p0, tx;
+uint8_t p0, tx, config, config_dma;
 NRF24_STATUS_REGISTER status_reg;
 NRF24_FIFO_STATUS_REGISTER fifo;
 NRF24_OBSERVE_TX_REGISTER obs;
@@ -31,7 +31,7 @@ void System_inits(void){
 
 void TX(void){
 	NRF24_TX_mode();
-	conf = NRF24_ReadConfig();
+	conf = NRF24_Read_Config();
 	delay_s(5);
 	NRF24_SendTX(str);
 	/*while(!(nrf_irq_flag)){
@@ -42,14 +42,14 @@ void TX(void){
 }
 void RX(void){
 	NRF24_RX_mode();
-	conf = NRF24_ReadConfig();
+	conf = NRF24_Read_Config();
 	uint8_t stat_rx = NRF24_ReadReg(NRF24_REG_STATUS);
 	fifo = NRF24_Read_FIFO_STATUS();
 	while(!(nrf_irq_flag))
 	{
 		fifo = NRF24_Read_FIFO_STATUS();
-		conf = NRF24_ReadConfig();
-		stat = NRF24_ReadStatus();
+		conf = NRF24_Read_Config();
+		stat = NRF24_Read_Status();
 		delay_s(1);
 	}
 	stat_rx = NRF24_ReadRX(result, 32);
@@ -57,26 +57,19 @@ void RX(void){
 int main(void){
 	System_inits();
 	NRF24l01_init();
-	en_aa = NRF24_Read_EN_AA();
-	p0 = NRF24_ReadReg(NRF24_REG_RX_ADDR_P0);
-	NRF24_WriteReg(NRF24_REG_CONFIG, 0 << NRF24_PWR_UP | 1 << NRF24_PRIM_RX | 1 << NRF24_EN_CRC);
-	conf = NRF24_ReadConfig();
-	NRF24_WriteBit(NRF24_REG_CONFIG, NRF24_PWR_UP, Bit_SET);
-	conf = NRF24_ReadConfig();
-	tx = NRF24_ReadReg(NRF24_REG_TX_ADDR);
-	fifo = NRF24_Read_FIFO_STATUS();
-	obs = NRF24_Read_OBSERVE_TX();
-	setaw = NRF24_Read_Setup_AW();
-	rfset = NRF24_Read_RF_SETUP();
-	rx_addr_p0 = NRF24_ReadReg_DMA(NRF24_REG_RX_ADDR_P0);
+/*	NRF24_Write_Reg_DMA(NRF24_REG_CONFIG, 1 << NRF24_PWR_UP | 0 << NRF24_PRIM_RX | 1 << NRF24_EN_CRC | 1 << NRF24_MASK_MAX_RT);
+	config_dma = NRF24_Read_Reg_DMA(NRF24_REG_CONFIG);
+	conf = NRF24_Read_Config();
+	NRF24_WriteBit_DMA(NRF24_REG_CONFIG, 1, 0);
+	config = NRF24_ReadReg(NRF24_REG_CONFIG);*/
 //	TX();
-	RX();
+//	RX();
 	while(1)
 	{
-		fifo = NRF24_Read_FIFO_STATUS();
-		obs = NRF24_Read_OBSERVE_TX();
-		conf = NRF24_ReadConfig();
-		stat = NRF24_ReadStatus();
-		delay_s(1);
+		rx_addr_p0 = NRF24_Read_Reg_DMA(NRF24_REG_RX_ADDR_P0);
+		tx = NRF24_Read_Reg_DMA(NRF24_REG_TX_ADDR);
+		p0 = NRF24_ReadReg(NRF24_REG_RX_ADDR_P0);
+		config_dma = NRF24_Read_Reg_DMA(NRF24_REG_STATUS);
+//		config = NRF24_ReadReg(NRF24_REG_STATUS);
 	}
 }

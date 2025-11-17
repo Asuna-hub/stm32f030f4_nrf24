@@ -60,22 +60,14 @@ void SPI1_NRF24_GPIO_Init(void){
 	GPIOA->MODER &= ~GPIO_MODER_MODER0;
 	
 	GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR0;
-  GPIOA->PUPDR |= GPIO_PUPDR_PUPDR0_0; // Pull-up
+	GPIOA->PUPDR |= GPIO_PUPDR_PUPDR0_0; // Pull-up
 }
 
 uint8_t SPI_transfer_data(uint8_t dt) {
-  while (!(SPI1->SR & SPI_SR_TXE));
-  *(__IO uint8_t*)&SPI1->DR = dt;
-  while (!(SPI1->SR & SPI_SR_RXNE));
-  return (*(__IO uint8_t*)&SPI1->DR);
-}
-
-uint8_t SPI_DMA_TransmitReceive(uint8_t tx_data)
-{
-	uint8_t rx_data;
-    SPI_DMA_Transmit(tx_data, 8);
-    SPI_DMA_Receive(rx_data, 8);
-	return rx_data;
+	while (!(SPI1->SR & SPI_SR_TXE));
+	*(__IO uint8_t*)&SPI1->DR = dt;
+	while (!(SPI1->SR & SPI_SR_RXNE));
+	return (*(__IO uint8_t*)&SPI1->DR);
 }
 
 void nrf_irq_init(void)
@@ -99,3 +91,4 @@ void EXTI0_1_IRQHandler(void)
 		nrf_irq_flag = 1;
 	}
 }
+

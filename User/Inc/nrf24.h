@@ -349,19 +349,19 @@ enum NRF24_Commands{
 	NRF24_CMD_R_RX_PL_WID        = 0x60, // Read RX-payload width for the top R_RX_PAYLOAD in the RX FIFO.
 	NRF24_CMD_W_ACK_PAYLOAD      = 0xA8, // Used in RX mode. Write Payload to be transmitted together with ACK packet on PIPE PPP
 	NRF24_CMD_W_TX_PAYLOAD_NOACK = 0xB0, // Used in TX mode. Disables AUTOACK on this specific packet.
-	NRF24_CMD_NOP                = 0xFF  // No Operation. Might be used to read the STATUS register
+	NRF24_CMD_NOP                = 0xFF  // No Operation. Might be used to read the register
 };
 /*==============================================================================*/
 
-//                                  Functions
+//                            Functions without DMA
 /*==============================================================================*/
 void NRF24l01_init(void);
 void NRF24_RX_mode(void);
 void NRF24_TX_mode(void);
 void NRF24_SendTX(uint8_t *data);
 uint8_t NRF24_ReadReg(uint8_t rg); // read single register
-uint8_t NRF24_ReadReg_DMA(uint8_t rg);
 void NRF24_WriteReg(uint8_t rg, uint8_t dt); // write single register
+
 void NRF24_WriteBit(uint8_t rg, uint8_t bit, BitAction value); // write bit to nrf24 register
 void NRF24_WritePayload(uint8_t *data, uint8_t data_size); // Write data to transmission
 void NRF24_WriteRegMultiple(uint8_t reg, uint8_t *data, uint8_t len); 
@@ -375,8 +375,8 @@ void NRF24_Set_rx_addr(uint8_t *addr, uint8_t num_pipe);
 void NRF24_Set_tx_addr(uint8_t *addr);
 
 //Read functions
-NRF24_STATUS_REGISTER NRF24_ReadStatus();
-NRF24_CONFIG_REGISTER NRF24_ReadConfig();
+NRF24_STATUS_REGISTER NRF24_Read_Status();
+NRF24_CONFIG_REGISTER NRF24_Read_Config();
 NRF24_EN_AA_REGISTER NRF24_Read_EN_AA();
 NRF24_EN_RXADDR_REGISTER NRF24_Read_EN_RXADDR();
 NRF24_SETUP_AW_REGISTER NRF24_Read_Setup_AW();
@@ -388,4 +388,11 @@ NRF24_RPD_REGISTER NRF24_Read_RPD();
 NRF24_FIFO_STATUS_REGISTER NRF24_Read_FIFO_STATUS();
 NRF24_DYNPD_REGISTER NRF24_Read_DYNPD();
 NRF24_FEATURE_REGISTER NRF24_Read_FEATURE();
+
+//                            Functions with DMA
+/*==============================================================================*/
+uint8_t NRF24_Read_Reg_DMA(uint8_t reg);
+void NRF24_Write_Reg_DMA(uint8_t rg, uint8_t dt);
+void NRF24_WriteBit_DMA(uint8_t rg, uint8_t bit, BitAction value);
+void NRF24_WritePayload_DMA(uint8_t *data, uint8_t data_size);
 #endif

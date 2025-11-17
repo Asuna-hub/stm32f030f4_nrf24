@@ -2,7 +2,9 @@
 
 uint8_t rx_txAddr[] = {0x78, 0x78, 0x78, 0x78, 0x78};
 
-//main functions
+
+//                                         Functions without DMA
+/*================================================================================================================*/
 void NRF24l01_init(void){
 	SPI1_Init();
 	delay_uS(5);
@@ -25,15 +27,8 @@ void NRF24l01_init(void){
 	NRF24_WriteReg(NRF24_REG_RF_SETUP, NRF24_DataRate_1M | NRF24_OutputPower_M18dBm); //TX_PWR:0dBm, Datarate:1Mbps
 }
 
-uint8_t NRF24_ReadReg_DMA(uint8_t rg){
-	
-	NRF24_CSN_LOW;
-	SPI_DMA_TransmitReceive(NRF24_CMD_R_REGISTER | rg & 0x1F);
-	uint8_t result = SPI_DMA_TransmitReceive(NRF24_CMD_NOP);
-	NRF24_CSN_HIGH;
-	
-	return result;
-}
+
+
 
 void NRF24_TX_mode(void){
 	NRF24_Set_tx_addr(rx_txAddr);
@@ -55,7 +50,6 @@ void NRF24_SendTX(uint8_t *data){
 	NRF24_CE_LOW;
 }
 uint8_t NRF24_ReadReg(uint8_t rg){
-	
 	NRF24_CSN_LOW;
 	SPI_transfer_data(NRF24_CMD_R_REGISTER | rg & 0x1F);
 	uint8_t result = SPI_transfer_data(NRF24_CMD_NOP);
@@ -66,8 +60,7 @@ uint8_t NRF24_ReadReg(uint8_t rg){
 
 void NRF24_WriteReg(uint8_t rg, uint8_t dt){
 	NRF24_CSN_LOW;
-	uint8_t write = NRF24_CMD_W_REGISTER | (rg & 0x1F);
-	SPI_transfer_data(write);
+	SPI_transfer_data(NRF24_CMD_W_REGISTER | (rg & 0x1F));
 	SPI_transfer_data(dt);
 	NRF24_CSN_HIGH;
 }
@@ -132,14 +125,14 @@ void NRF24_Set_tx_addr(uint8_t *addr){
 }
 
 //Read functions
-NRF24_STATUS_REGISTER NRF24_ReadStatus(){
+NRF24_STATUS_REGISTER NRF24_Read_Status(){
 	NRF24_STATUS_REGISTER reg;
 	NRF24_CSN_LOW;
 	reg.all = NRF24_ReadReg(NRF24_REG_STATUS);
 	NRF24_CSN_HIGH;
 	return reg; 
 }
-NRF24_CONFIG_REGISTER NRF24_ReadConfig(){
+NRF24_CONFIG_REGISTER NRF24_Read_Config(){
 	NRF24_CONFIG_REGISTER reg;
 	NRF24_CSN_LOW;
 	reg.all = NRF24_ReadReg(NRF24_REG_CONFIG);
@@ -233,4 +226,76 @@ uint8_t NRF24_ReadRX(uint8_t *data, uint8_t data_size){
 	NRF24_CSN_HIGH;
 
 	return NRF24_ReadReg(NRF24_REG_STATUS);
+}
+
+//                                         Functions with using DMA
+/*================================================================================================================*/
+uint8_t tx_data[2];
+uint8_t rx_data[2];
+
+uint8_t NRF24_Read_Reg_DMA(uint8_t rg) {
+    tx_data[0] = NRF24_CMD_R_REGISTER | rg & 0x1F;
+    tx_data[1] = NRF24_CMD_NOP;
+    
+	SPI_DMA_transfer_data(tx_data, rx_data, 2);
+	
+    NRF24_CSN_LOW;
+	SPI_DMA_RX_TX_ON();
+	DMA1_Channel2->CCR |= DMA_CCR_EN;
+    DMA1_Channel3->CCR |= DMA_CCR_EN;
+    while(DMA1_Channel2->CCR & DMA_CCR_EN || DMA1_Channel3->CCR & DMA_CCR_EN);
+    NRF24_CSN_HIGH;
+	SPI_DMA_RX_TX_OFF();
+	
+    return rx_data[1];
+}
+
+void NRF24_Write_Reg_DMA(uint8_t rg, uint8_t dt){
+	tx_data[0] = NRF24_CMD_W_REGISTER | rg & 0x1F;
+	tx_data[1] = dt;
+	SPI_DMA_transfer_data(tx_data, rx_data, 2);
+	
+    NRF24_CSN_LOW;
+	SPI_DMA_RX_TX_ON();
+	DMA1_Channel2->CCR |= DMA_CCR_EN;
+    DMA1_Channel3->CCR |= DMA_CCR_EN;
+    while(DMA1_Channel2->CCR & DMA_CCR_EN || DMA1_Channel3->CCR & DMA_CCR_EN);
+    NRF24_CSN_HIGH;
+	SPI_DMA_RX_TX_OFF();
+}
+void NRF24_WriteBit_DMA(uint8_t rg, uint8_t bit, BitAction value) {
+    uint8_t tmp;
+    tmp = NRF24_Read_Reg_DMA(rg);
+    if (value != Bit_RESET) {
+        tmp |= 1 << bit;
+    } else {
+        tmp &= ~(1 << bit);
+    }
+    NRF24_Write_Reg_DMA(rg, tmp);
+}
+
+void NRF24_WritePayload_DMA(uint8_t *data, uint8_t data_size){
+	uint8_t tx_payload[data_size + 1];
+	tx_payload[0] = NRF24_CMD_W_TX_PAYLOAD;
+	for (int i = 1; i <= data_size; i++){
+		tx_payload[i] = data[i];
+	}
+	SPI_DMA_TX(tx_payload, data_size + 1);
+	
+	NRF24_CSN_LOW;
+	SPI_DMA_TX_ON;
+	DMA_CH3_ON;
+    while(DMA1_Channel3->CCR & DMA_CCR_EN);
+    NRF24_CSN_HIGH;
+	SPI_DMA_TX_OFF;
+}
+
+void NRF24_WriteRegMultiple_DMA(uint8_t reg, uint8_t *data, uint8_t len){
+	
+	NRF24_CSN_LOW;
+	SPI_transfer_data(NRF24_CMD_W_REGISTER | reg & 0x1F);
+	for (int i = 0; i < len; i++){
+		SPI_transfer_data(data[i]);
+	}
+	NRF24_CSN_HIGH; 
 }

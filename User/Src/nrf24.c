@@ -284,7 +284,7 @@ void NRF24_Write_Payload_DMA(uint8_t *data, uint8_t data_size){
 	DMA_RX_TX_ON();
 	while(SPI1->SR & SPI_SR_BSY);
 	NRF24_CSN_HIGH;
-	SPI_DMA_TX_OFF;
+	SPI_DMA_RX_TX_OFF();
 }
 
 void NRF24_Write_Reg_Multiple_DMA(uint8_t rg, uint8_t *data, uint8_t data_size) {
@@ -297,7 +297,7 @@ void NRF24_Write_Reg_Multiple_DMA(uint8_t rg, uint8_t *data, uint8_t data_size) 
 	DMA_RX_TX_ON();
 	while(SPI1->SR & SPI_SR_BSY);
 	NRF24_CSN_HIGH;
-	SPI_DMA_TX_OFF;
+	SPI_DMA_RX_TX_OFF();
 }
 void NRF24_Clear_Status_DMA(void){
 	NRF24_Write_Bit_DMA(NRF24_REG_STATUS, 4, Bit_SET);
@@ -314,7 +314,7 @@ void NRF24_FLUSH_RX_DMA(void){
 	DMA_RX_TX_ON();
 	while(SPI1->SR & SPI_SR_BSY);
 	NRF24_CSN_HIGH;
-	SPI_DMA_TX_OFF;
+	SPI_DMA_RX_TX_OFF();
 }
 void NRF24_FLUSH_TX_DMA(void){
 	tx_data[0] = NRF24_CMD_FLUSH_TX;
@@ -325,7 +325,7 @@ void NRF24_FLUSH_TX_DMA(void){
 	DMA_RX_TX_ON();
 	while(SPI1->SR & SPI_SR_BSY);
 	NRF24_CSN_HIGH;
-	SPI_DMA_TX_OFF;
+	SPI_DMA_RX_TX_OFF();
 }
 
 void NRF24_Set_rx_addr_DMA(uint8_t *addr, uint8_t num_pipe){
@@ -347,7 +347,7 @@ uint8_t NRF24_Read_RX_DMA(uint8_t *data, uint8_t data_size){
 	DMA_RX_TX_ON();
 	while(SPI1->SR & SPI_SR_BSY);
 	NRF24_CSN_HIGH;
-	SPI_DMA_TX_OFF;
+	SPI_DMA_RX_TX_OFF();
 	
 	memcpy(&data[0], &rx_data[1], data_size);
 	

@@ -355,22 +355,21 @@ enum NRF24_Commands{
 
 //                            Functions without DMA
 /*==============================================================================*/
-void NRF24l01_init(void);
+void NRF24L01_Init(void);
 void NRF24_RX_mode(void);
 void NRF24_TX_mode(void);
 void NRF24_SendTX(uint8_t *data);
-uint8_t NRF24_ReadReg(uint8_t rg); // read single register
-void NRF24_WriteReg(uint8_t rg, uint8_t dt); // write single register
-
-void NRF24_WriteBit(uint8_t rg, uint8_t bit, BitAction value); // write bit to nrf24 register
-void NRF24_WritePayload(uint8_t *data, uint8_t data_size); // Write data to transmission
-void NRF24_WriteRegMultiple(uint8_t reg, uint8_t *data, uint8_t len); 
-void NRF24_ClearStatus(void);
+uint8_t NRF24_Read_Reg(uint8_t rg); // read single register
+void NRF24_Write_Reg(uint8_t rg, uint8_t dt); // write single register
+void NRF24_Write_Bit(uint8_t rg, uint8_t bit, BitAction value); // write bit to nrf24 register
+void NRF24_Write_Payload(uint8_t *data, uint8_t data_size); // Write data to transmission
+void NRF24_Write_Reg_Multiple(uint8_t rg, uint8_t *data, uint8_t data_size); 
+void NRF24_Clear_Status(void);
 void NRF24_FLUSH_RX(void);
 void NRF24_FLUSH_TX(void);
 void NRF24_RX_Config(void);
 void NRF24_writeTX(uint8_t *data);
-uint8_t NRF24_ReadRX(uint8_t *data, uint8_t data_size);
+uint8_t NRF24_Read_RX(uint8_t *data, uint8_t data_size);
 void NRF24_Set_rx_addr(uint8_t *addr, uint8_t num_pipe);
 void NRF24_Set_tx_addr(uint8_t *addr);
 
@@ -391,8 +390,20 @@ NRF24_FEATURE_REGISTER NRF24_Read_FEATURE();
 
 //                            Functions with DMA
 /*==============================================================================*/
+void NRF24L01_DMA_Init(void);
+void NRF24_TX_mode_DMA(void);
+void NRF24_RX_mode_DMA(void);
 uint8_t NRF24_Read_Reg_DMA(uint8_t reg);
 void NRF24_Write_Reg_DMA(uint8_t rg, uint8_t dt);
-void NRF24_WriteBit_DMA(uint8_t rg, uint8_t bit, BitAction value);
-void NRF24_WritePayload_DMA(uint8_t *data, uint8_t data_size);
+void NRF24_Write_Bit_DMA(uint8_t rg, uint8_t bit, BitAction value);
+void NRF24_Write_Payload_DMA(uint8_t *data, uint8_t data_size);
+void NRF24_Write_Reg_Multiple_DMA(uint8_t rg, uint8_t *data, uint8_t data_size);
+void NRF24_Clear_Status_DMA(void);
+void NRF24_FLUSH_RX_DMA(void);
+void NRF24_FLUSH_TX_DMA(void);
+void NRF24_Set_rx_addr_DMA(uint8_t *addr, uint8_t num_pipe);
+uint8_t NRF24_Read_RX_DMA(uint8_t *data, uint8_t data_size);
+void NRF24_SendTX_DMA(uint8_t *data, uint16_t size);
+
+
 #endif
